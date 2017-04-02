@@ -73,8 +73,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setupRecyclerView(recyclerView);
 
         sortByPopular();
-
-
     }
 
     private void sortByTopRated() {
@@ -109,27 +107,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
 
-//        MenuItem refresh = menu.findItem(R.id.reload_data);
-//        refresh.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-//            @Override
-//            public boolean onMenuItemClick(MenuItem item) {
-//                switch (SELECTED_TYPE){
-//                    case TOP_RATED:
-//                        sortByTopRated();
-//                        break;
-//                    case MOST_POPULAR:
-//                        sortByPopular();
-//                        break;
-//                    case ERROR:
-//                        showErrorLayout("Check it ! ");
-//                        break;
-//                    default:
-//                        Log.e(TAG, "onOptionsItemSelected: ERROR");
-//                }
-//                return true;
-//            }
-//        });
-
         return true;
     }
 
@@ -152,9 +129,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         break;
                     case MOST_POPULAR:
                         sortByPopular();
-                        break;
-                    case ERROR:
-                        showErrorLayout("Check it ! ");
                         break;
                     default:
                         Log.e(TAG, "onOptionsItemSelected: ERROR");
@@ -190,6 +164,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         protected void onPreExecute() {
             super.onPreExecute();
 
+            setActionBarTitle();
+
             if(isNetworkAvailable()) {
                 progressBar.setVisibility(View.VISIBLE);
                 errorLayout.setVisibility(View.INVISIBLE);
@@ -211,7 +187,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else {
 
                 setActionBarTitle();
-
                 recyclerView.setVisibility(View.VISIBLE);
 
                 movieAdapter = new MovieAdapter(getApplicationContext(), s);
@@ -285,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.INVISIBLE);
         errorLayout.setVisibility(View.VISIBLE);
-        setActionBarTitle();
+
         errorMessage.setText(message);
 
     }
@@ -300,10 +275,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 actionBar.setTitle(title);
                 break;
             case MOST_POPULAR:
-                title = getResources().getString(R.string.actionbar_title_most_popular);
-                actionBar.setTitle(title);
-                break;
-            case ERROR:
                 title = getResources().getString(R.string.actionbar_title_most_popular);
                 actionBar.setTitle(title);
                 break;

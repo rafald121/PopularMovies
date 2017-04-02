@@ -8,7 +8,6 @@
         android:id="@+id/reload_data"
         android:orderInCategory="1"
         android:title="@string/reload_data"
-        android:icon="@mipmap/ic_launcher"
         app:showAsAction="always"/>
 
     <item
@@ -16,7 +15,6 @@
         android:title="@string/sort_by_popular"
         android:orderInCategory="2"
         app:showAsAction="never"/>
-
 
     <item
         android:id="@+id/sort_by_top_rated"
