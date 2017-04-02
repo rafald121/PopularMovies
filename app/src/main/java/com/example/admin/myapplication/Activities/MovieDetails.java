@@ -1,6 +1,7 @@
 package com.example.admin.myapplication.Activities;
 
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,9 +18,13 @@ public class MovieDetails extends AppCompatActivity {
 
     private static final String TAG = MovieDetails.class.getSimpleName();
 
+    private ActionBar actionBar = null;
+
     private TextView textViewTitle, textViewReleaseDate, textViewVoteAvarage, textViewDetails = null;
     private ImageView imageViewPoster = null;
     private Intent intentMovieDetails;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +37,8 @@ public class MovieDetails extends AppCompatActivity {
         imageViewPoster = (ImageView) findViewById(R.id.movie_poster);
 
         intentMovieDetails = getIntent();
+        actionBar = getSupportActionBar();
+        setActionBarTitle();
 
         bind();
 
@@ -76,4 +83,10 @@ public class MovieDetails extends AppCompatActivity {
                 .into(imageViewPoster);
 
     }
+
+    private void setActionBarTitle() {
+        if(intentMovieDetails.hasExtra(ConstantValues.MOVIE_TITLE))
+            actionBar.setTitle(intentMovieDetails.getStringExtra(ConstantValues.MOVIE_TITLE));
+    }
+
 }
