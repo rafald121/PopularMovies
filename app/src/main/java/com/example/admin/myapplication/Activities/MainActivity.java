@@ -1,6 +1,7 @@
 package com.example.admin.myapplication.Activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -21,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.admin.myapplication.Adapters.MovieAdapter;
+import com.example.admin.myapplication.ConstantValues;
 import com.example.admin.myapplication.Model.Movie;
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.Utils.NetworkHelper;
@@ -33,9 +35,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, MovieAdapter.RecyclerItemClickListener{
 
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    private List<Movie> listOfMovies = null;
+
     private RecyclerView recyclerView = null;
     private MovieAdapter movieAdapter = null;
     private GridLayoutManager gridLayoutManager;
@@ -144,18 +149,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             refreshData();
     }
 
-    private void refreshData() {
+    @Override
+    public void onListItemClick(int clickedItemPosition) {
+        Log.i(TAG, "onListItemClick: clicked Movie: " + listOfMovies.get(clickedItemPosition).getTitle());
 
-        switch (SELECTED_TYPE) {
-            case TOP_RATED:
-                sortByTopRated();
-                break;
-            case MOST_POPULAR:
-                sortByPopular();
-                break;
-            default:
-                Log.e(TAG, "ERROR");
-        }
+        Intent intentMovieDetails = new Intent(MainActivity.this, MovieDetails.class);
+
+        String movieTitle = listOfMovies.get(clickedItemPosition).getTitle();
+        String movieReleaseDate = listOfMovies.get(clickedItemPosition).getReleaseDate();
+        String moviePoster = listOfMovies.get(clickedItemPosition).getMoviePoster();
+        String movieVoteAvarage = listOfMovies.get(clickedItemPosition).getVoteAvarage();
+        String movieDetails = listOfMovies.get(clickedItemPosition).getDetails();
+
+        intentMovieDetails.putExtra(ConstantValues.MOVIE_TITLE, movieTitle);
+        intentMovieDetails.putExtra(ConstantValues.MOVIE_RELEASE_DATE, movieReleaseDate);
+        intentMovieDetails.putExtra(ConstantValues.MOVIE_POSTERS, moviePoster);
+        intentMovieDetails.putExtra(ConstantValues.MOVIE_VOTE_AVARAGE, movieVoteAvarage);
+        intentMovieDetails.putExtra(ConstantValues.MOVIE_DETAILS, movieDetails);
+
+        startActivity(intentMovieDetails);
     }
 
     class MovieQueryTask extends AsyncTask<String, Void, List<Movie>> {
@@ -189,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 setActionBarTitle();
                 recyclerView.setVisibility(View.VISIBLE);
 
-                movieAdapter = new MovieAdapter(getApplicationContext(), s);
+                movieAdapter = new MovieAdapter(getApplicationContext(), s, MainActivity.this);
                 recyclerView.setAdapter(movieAdapter);
             }
         }
@@ -206,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 String urlType = params[0];
                 String resultString = null;
-                List<Movie> listOfMovies = new ArrayList<>();
+                listOfMovies = new ArrayList<>();
                 URL url = null;
                 Uri uri;
 
@@ -253,6 +265,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return null;
         }
 
+    }
+
+    private void refreshData() {
+
+        switch (SELECTED_TYPE) {
+            case TOP_RATED:
+                sortByTopRated();
+                break;
+            case MOST_POPULAR:
+                sortByPopular();
+                break;
+            default:
+                Log.e(TAG, "ERROR");
+        }
     }
 
     private void showErrorLayout(String message) {

@@ -26,12 +26,20 @@ import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
 
+    private static final String TAG = MovieAdapter.ViewHolder.class.getSimpleName();
     private List<Movie> movieList;
     private Context context;
 
-    public MovieAdapter(Context context, List<Movie> movieList) {
+    final private RecyclerItemClickListener mOnClickListener;
+
+    public interface RecyclerItemClickListener{
+        void onListItemClick(int cickedItemIndex);
+    }
+
+    public MovieAdapter(Context context, List<Movie> movieList, RecyclerItemClickListener listener) {
         this.movieList = movieList;
         this.context = context;
+        this.mOnClickListener = listener;
     }
 
     @Override
@@ -80,7 +88,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
 
         @Override
         public void onClick(View v) {
-            Log.i("Movie Adapter", "onClick: gello");
+            Log.i(TAG, "onClick: " + movieList.get(getAdapterPosition()).getTitle());
+
+            int clickedPosition = getAdapterPosition();
+            mOnClickListener.onListItemClick(clickedPosition);
         }
     }
 }
