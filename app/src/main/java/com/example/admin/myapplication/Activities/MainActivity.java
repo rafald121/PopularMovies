@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -80,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         recyclerView.setVisibility(View.INVISIBLE);
         errorLayout.setVisibility(View.INVISIBLE);
+
         SELECTED_TYPE = TOP_RATED;
         new MovieQueryTask().execute(TOP_RATED);
 
@@ -89,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         recyclerView.setVisibility(View.INVISIBLE);
         errorLayout.setVisibility(View.INVISIBLE);
+
         SELECTED_TYPE = MOST_POPULAR;
         new MovieQueryTask().execute(MOST_POPULAR);
 
@@ -150,13 +153,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
             if(isNetworkAvailable()) {
                 progressBar.setVisibility(View.VISIBLE);
                 errorLayout.setVisibility(View.INVISIBLE);
                 recyclerView.setVisibility(View.INVISIBLE);
             } else {
                 showErrorLayout("No inthernet connection");
-                cancel(true);
+                cancel(true);//abort
             }
 
         }
@@ -164,12 +168,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         protected void onPostExecute(List<Movie> s) {
 
-
             progressBar.setVisibility(View.INVISIBLE);
 
             if (s == null) {
-                Log.i(TAG, "onPostExecute: s is null");
-                showErrorLayout("hao");
+                showErrorLayout("Cannot fetch data from internet, list is null");
             } else {
 
                 setActionBarTitle();
@@ -234,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
             } else {
-                showErrorLayout("url error");
+                showErrorLayout("Bad syntax of URL");
             }
 
             return null;
@@ -283,28 +285,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    private void setRecyclerViewVisible(RecyclerView recyclerview){
-        recyclerview.setVisibility(View.VISIBLE);
-    }
-
-    private void setRecyclerViewInvisible(RecyclerView recyclerview){
-        recyclerview.setVisibility(View.INVISIBLE);
-    }
-
-    private void setProgressBarVisible(ProgressBar progressbar){
-        progressbar.setVisibility(View.VISIBLE);
-    }
-
-    private void setProgressBarInvisible(ProgressBar progressbar){
-        progressbar.setVisibility(View.INVISIBLE);
-    }
-
-    private void setErrorLayoutVisible(LinearLayout linearlayout){
-        linearlayout.setVisibility(View.VISIBLE);
-    }
-
-    private void setErrorLayoutInvisible(LinearLayout linearlayout){
-        linearlayout.setVisibility(View.INVISIBLE);
-    }
+//    private void setRecyclerViewVisible(RecyclerView recyclerview){
+//        recyclerview.setVisibility(View.VISIBLE);
+//    }
+//
+//    private void setRecyclerViewInvisible(RecyclerView recyclerview){
+//        recyclerview.setVisibility(View.INVISIBLE);
+//    }
+//
+//    private void setProgressBarVisible(ProgressBar progressbar){
+//        progressbar.setVisibility(View.VISIBLE);
+//    }
+//
+//    private void setProgressBarInvisible(ProgressBar progressbar){
+//        progressbar.setVisibility(View.INVISIBLE);
+//    }
+//
+//    private void setErrorLayoutVisible(LinearLayout linearlayout){
+//        linearlayout.setVisibility(View.VISIBLE);
+//    }
+//
+//    private void setErrorLayoutInvisible(LinearLayout linearlayout){
+//        linearlayout.setVisibility(View.INVISIBLE);
+//    }
+//
 
 }
