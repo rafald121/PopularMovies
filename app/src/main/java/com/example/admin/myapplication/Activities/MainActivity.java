@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         errorLayout = (LinearLayout) findViewById(R.id.error_layout);
         errorMessage = (TextView) findViewById(R.id.error_message);
-        refreshButton = (Button) findViewById(R.id.refresh_button);
+        refreshButton = (Button) findViewById(R.id.refresh_button_error);
         refreshButton.setOnClickListener(this);
 
         actionBar = getSupportActionBar();
@@ -108,6 +108,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+
+//        MenuItem refresh = menu.findItem(R.id.reload_data);
+//        refresh.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem item) {
+//                switch (SELECTED_TYPE){
+//                    case TOP_RATED:
+//                        sortByTopRated();
+//                        break;
+//                    case MOST_POPULAR:
+//                        sortByPopular();
+//                        break;
+//                    case ERROR:
+//                        showErrorLayout("Check it ! ");
+//                        break;
+//                    default:
+//                        Log.e(TAG, "onOptionsItemSelected: ERROR");
+//                }
+//                return true;
+//            }
+//        });
+
         return true;
     }
 
@@ -117,12 +139,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int selectedItem = item.getItemId();
 
         switch (selectedItem) {
-            case R.id.sortByPopular:
+            case R.id.sort_by_popular:
                 sortByPopular();
                 return true;
-            case R.id.sortByTopRated:
+            case R.id.sort_by_top_rated:
                 sortByTopRated();
                 return true;
+            case R.id.reload_data:
+                switch (SELECTED_TYPE){
+                    case TOP_RATED:
+                        sortByTopRated();
+                        break;
+                    case MOST_POPULAR:
+                        sortByPopular();
+                        break;
+                    case ERROR:
+                        showErrorLayout("Check it ! ");
+                        break;
+                    default:
+                        Log.e(TAG, "onOptionsItemSelected: ERROR");
+                }
 
         }
         return super.onOptionsItemSelected(item);

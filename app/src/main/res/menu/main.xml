@@ -5,16 +5,25 @@
         tools:context=".Activities.MainActivity">
 
     <item
-        android:id="@+id/sortByPopular"
-        android:title="@string/sort_by_popular"
+        android:id="@+id/reload_data"
         android:orderInCategory="1"
-        android:showAsAction="never"/>
+        android:title="@string/reload_data"
+        android:icon="@mipmap/ic_launcher"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/sort_by_popular"
+        android:title="@string/sort_by_popular"
+        android:orderInCategory="2"
+        app:showAsAction="never"/>
 
 
     <item
-        android:id="@+id/sortByTopRated"
+        android:id="@+id/sort_by_top_rated"
         android:title="@string/sort_by_top_rated"
-        android:orderInCategory="2"
-        android:showAsAction="never"/>
+        android:orderInCategory="3"
+        app:showAsAction="never"/>
+
+
 
 </menu>
