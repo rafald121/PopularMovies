@@ -28,7 +28,7 @@ public class NetworkHelper {
     private static final String TAG = NetworkHelper.class.getSimpleName();
 
     private static final String URL_BASE = "http://api.themoviedb.org/3/movie";
-    private static final String URL_PICTURE_BASE = "http://image.tmdb.org/t/p/w185";
+    public static final String URL_PICTURE_BASE = "http://image.tmdb.org/t/p/w185";
 
     private static final String URL_TOP_RATED = "top_rated";
     private static final String URL_MOST_POPULAR = "popular";
@@ -37,7 +37,6 @@ public class NetworkHelper {
 
     private static final String TOP_RATED = "TOP_RATED";
     private static final String MOST_POPULAR = "MOST_POPULAR";
-
 
 
     public static Uri mostPopular(){
@@ -72,6 +71,9 @@ public class NetworkHelper {
 
     public static String getJsonDataFromResponse(URL url) throws IOException {
 
+        if(url == null && url.toString().equals("") && url.toString().length() == 0)
+            return null;
+
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
         String resultString;
@@ -103,8 +105,7 @@ public class NetworkHelper {
 
         } catch (IOException e) {
             Log.e("BLOND", "Error ", e);
-            // If the code didn't successfully get the weather data, there's no point in attempting
-            // to parse it.
+            return null;
 
         } finally {
             if (urlConnection != null) {
@@ -118,8 +119,6 @@ public class NetworkHelper {
                 }
             }
         }
-
-        return null;
 
 //        Log.i(TAG, "getJsonDataFromResponse: url: " + url.toString());
 //
@@ -163,6 +162,11 @@ public class NetworkHelper {
     }
 
     public static List<Movie> convertJSONIntoList(String jsonString) throws JSONException {
+
+        if(jsonString == null)
+            return null;
+        if( jsonString.equals("") && jsonString.length()==0)
+            return null;
 
         final String JSON_RESULT = "results";
         final String JSON_ORIGINAL_TITLE = "original_title";
