@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -54,7 +53,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private static final String TOP_RATED = "TOP_RATED";
     private static final String MOST_POPULAR = "MOST_POPULAR";
-    private static final String ERROR = "ERROR";
 
     private String SELECTED_TYPE = null;
 
@@ -168,7 +166,57 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    class MovieQueryTask extends AsyncTask<String, Void, List<Movie>> {
+    private void refreshData() {
+
+        switch (SELECTED_TYPE) {
+            case TOP_RATED:
+                sortByTopRated();
+                break;
+            case MOST_POPULAR:
+                sortByPopular();
+                break;
+            default:
+                Log.e(TAG, "ERROR");
+        }
+    }
+
+    private void showErrorLayout(String message) {
+
+        recyclerView.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.INVISIBLE);
+        errorLayout.setVisibility(View.VISIBLE);
+
+        errorMessage.setText(message);
+
+    }
+
+
+    private void setActionBarTitle() {
+        String title ;
+
+        switch (SELECTED_TYPE) {
+            case TOP_RATED:
+                title = getResources().getString(R.string.actionbar_title_top_rated);
+                actionBar.setTitle(title);
+                break;
+            case MOST_POPULAR:
+                title = getResources().getString(R.string.actionbar_title_most_popular);
+                actionBar.setTitle(title);
+                break;
+            default:
+                Log.e(TAG, "setActionBarTitle: ERROR");
+        }
+
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    private class MovieQueryTask extends AsyncTask<String, Void, List<Movie>> {
 
         @Override
         protected void onPreExecute() {
@@ -265,56 +313,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return null;
         }
 
-    }
-
-    private void refreshData() {
-
-        switch (SELECTED_TYPE) {
-            case TOP_RATED:
-                sortByTopRated();
-                break;
-            case MOST_POPULAR:
-                sortByPopular();
-                break;
-            default:
-                Log.e(TAG, "ERROR");
-        }
-    }
-
-    private void showErrorLayout(String message) {
-
-        recyclerView.setVisibility(View.INVISIBLE);
-        progressBar.setVisibility(View.INVISIBLE);
-        errorLayout.setVisibility(View.VISIBLE);
-
-        errorMessage.setText(message);
-
-    }
-
-
-    private void setActionBarTitle() {
-        String title ;
-
-        switch (SELECTED_TYPE) {
-            case TOP_RATED:
-                title = getResources().getString(R.string.actionbar_title_top_rated);
-                actionBar.setTitle(title);
-                break;
-            case MOST_POPULAR:
-                title = getResources().getString(R.string.actionbar_title_most_popular);
-                actionBar.setTitle(title);
-                break;
-            default:
-                Log.e(TAG, "setActionBarTitle: ERROR");
-        }
-
-    }
-
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
 
