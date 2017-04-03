@@ -28,7 +28,7 @@ public class MovieDetails extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.movie_details);
+        setContentView(R.layout.movie_details_tmp);
 
         textViewTitle = (TextView) findViewById(R.id.movie_title);
         textViewReleaseDate = (TextView) findViewById(R.id.movie_release_date);
