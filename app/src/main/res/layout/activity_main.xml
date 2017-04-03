@@ -3,14 +3,17 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/activitiesBackground">
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal">
-
+        android:layout_gravity="center_horizontal"
+        android:padding="4dp">
+        <!--TODO is this appropriate to set padding in Recycler View like line above?-->
     </android.support.v7.widget.RecyclerView>
 
 
@@ -39,7 +42,7 @@
 
         <Button
             android:id="@+id/refresh_button_error"
-            android:text="Refresh"
+            android:text="@string/refresh_error"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             />

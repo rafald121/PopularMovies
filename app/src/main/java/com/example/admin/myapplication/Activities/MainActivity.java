@@ -58,8 +58,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private String SELECTED_TYPE = null;
 
-// jackson oject mapper json
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -151,7 +149,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onListItemClick(int clickedItemPosition) {
-        Log.i(TAG, "onListItemClick: clicked Movie: " + listOfMovies.get(clickedItemPosition).getTitle());
 
         Intent intentMovieDetails = new Intent(MainActivity.this, MovieDetails.class);
 
@@ -168,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         intentMovieDetails.putExtra(ConstantValues.MOVIE_DETAILS, movieDetails);
 
         startActivity(intentMovieDetails);
+
     }
 
     class MovieQueryTask extends AsyncTask<String, Void, List<Movie>> {
@@ -183,7 +181,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 errorLayout.setVisibility(View.INVISIBLE);
                 recyclerView.setVisibility(View.INVISIBLE);
             } else {
-                showErrorLayout("No inthernet connection");
+                //TODO is this appropriate to use Strings from reources in code, not in xml like line below?
+                showErrorLayout(getResources().getString(R.string.error_message_no_connection));
                 cancel(true);//abort
             }
 
@@ -195,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             progressBar.setVisibility(View.INVISIBLE);
 
             if (s == null) {
-                showErrorLayout("Cannot fetch data from internet, list is null");
+                showErrorLayout(getResources().getString(R.string.error_message_list_is_null));
             } else {
 
                 setActionBarTitle();
@@ -247,6 +246,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                         try {
                             resultString = NetworkHelper.getJsonDataFromResponse(url);
+//                            TODO should I check in this place if resultString is not null? then go to next line
                             listOfMovies = NetworkHelper.convertJSONIntoList(resultString);
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -259,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
             } else {
-                showErrorLayout("Bad syntax of URL");
+                showErrorLayout(getResources().getString(R.string.error_message_bad_url_syntax));
             }
 
             return null;
@@ -318,6 +318,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+//    TODO should I use these methods:
+//    recyclerView.setVisibility(View.INVISIBLE);
+//    progressBar.setVisibility(View.INVISIBLE);
+//    errorLayout.setVisibility(View.VISIBLE);
+
+    //TODO or these:  ?
 //    private void setRecyclerViewVisible(RecyclerView recyclerview){
 //        recyclerview.setVisibility(View.VISIBLE);
 //    }

@@ -6,6 +6,8 @@ package com.example.admin.myapplication;
 
 public class ConstantValues {
 
+//    TODO It is good way of storing constant Strings that help me across whole project?
+//    like this, like constant Strings while JSON parsing, etc.
     public static final String MOVIE_TITLE = "movie_title";
     public static final String MOVIE_RELEASE_DATE = "movie_release_date";
     public static final String MOVIE_POSTERS = "movie_posters";

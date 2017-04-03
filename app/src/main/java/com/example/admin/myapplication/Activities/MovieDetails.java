@@ -24,11 +24,10 @@ public class MovieDetails extends AppCompatActivity {
     private ImageView imageViewPoster = null;
     private Intent intentMovieDetails;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.movie_details_tmp);
+        setContentView(R.layout.movie_details);
 
         textViewTitle = (TextView) findViewById(R.id.movie_title);
         textViewReleaseDate = (TextView) findViewById(R.id.movie_release_date);
@@ -41,8 +40,6 @@ public class MovieDetails extends AppCompatActivity {
         setActionBarTitle();
 
         bind();
-
-        Log.i(TAG, "onCreate: textViewTitle: " + intentMovieDetails.getStringExtra("textViewTitle"));
 
     }
 
@@ -73,9 +70,6 @@ public class MovieDetails extends AppCompatActivity {
         textViewReleaseDate.setText(releaseDate);
         textViewVoteAvarage.setText(voteAvarage);
         textViewDetails.setText(details);
-
-
-        Log.i(TAG, "bind: image url : " + posterLink);
 
         Glide.with(MovieDetails.this).load(posterLink)
                 .crossFade()

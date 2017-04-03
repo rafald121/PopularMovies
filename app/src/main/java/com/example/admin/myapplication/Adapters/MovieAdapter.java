@@ -6,9 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -16,7 +14,6 @@ import com.example.admin.myapplication.Model.Movie;
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.Utils.NetworkHelper;
 
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -64,14 +61,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
 
     public class ViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener{
 
-        private ImageButton thumbnail;
+        private ImageView thumbnail;
 
         public ViewHolder(View itemView) {
 
             super(itemView);
-            thumbnail = (ImageButton) itemView.findViewById(R.id.movie_item_image);
-
+            thumbnail = (ImageView) itemView.findViewById(R.id.movie_item_image);
             thumbnail.setOnClickListener(this);
+
         }
 
         public void bind(int position){
@@ -83,13 +80,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(thumbnail);
 
-
         }
 
         @Override
         public void onClick(View v) {
-            Log.i(TAG, "onClick: " + movieList.get(getAdapterPosition()).getTitle());
-
             int clickedPosition = getAdapterPosition();
             mOnClickListener.onListItemClick(clickedPosition);
         }

@@ -9,5 +9,14 @@
     <string name="actionbar_title_most_popular">Most popular</string>
     <string name="actionbar_title_connection_error">Connection Error</string>
 
+    <string name="refresh_error">Refresh</string>
 
+    <string name="header_title">Title</string>
+    <string name="header_release_date">Release Date</string>
+    <string name="header_vote_avarage">Vote Avarage</string>
+    <string name="header_plot_synopsis">Plot synopsis</string>
+
+    <string name="error_message_no_connection">No inthernet connection</string>
+    <string name="error_message_list_is_null">Cannot fetch data from internet, list is null</string>
+    <string name="error_message_bad_url_syntax">Bad syntax of URL</string>
 </resources>
