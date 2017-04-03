@@ -18,7 +18,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * Created by admin on 01.04.2017.
@@ -34,10 +33,6 @@ public class NetworkHelper {
     private static final String URL_MOST_POPULAR = "popular";
 
     private static final String URL_KEY = "?api_key=6e339219779d415f85a8fb48b3a9a07b";
-
-    private static final String TOP_RATED = "TOP_RATED";
-    private static final String MOST_POPULAR = "MOST_POPULAR";
-
 
     public static Uri mostPopular(){
         return Uri.parse(URL_BASE).buildUpon()
@@ -62,8 +57,6 @@ public class NetworkHelper {
         } catch (MalformedURLException e){
             e.printStackTrace();
         }
-
-        Log.e(TAG, "buildedURL: " + url.toString() );
 
         return url;
     }
@@ -104,7 +97,7 @@ public class NetworkHelper {
             return resultString;
 
         } catch (IOException e) {
-            Log.e("BLOND", "Error ", e);
+            Log.e(TAG, "Error ", e);
             return null;
 
         } finally {
@@ -115,49 +108,10 @@ public class NetworkHelper {
                 try {
                     reader.close();
                 } catch (final IOException e) {
-                    Log.e("BLOND", "Error closing stream", e);
+                    Log.e(TAG, "Error closing stream", e);
                 }
             }
         }
-
-//        Log.i(TAG, "getJsonDataFromResponse: url: " + url.toString());
-//
-//        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-//
-//        BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
-//
-//        String line;
-//        StringBuilder result = new StringBuilder();
-//
-//        while((line = br.readLine())!=null)
-//            result.append(line);
-//
-//        br.close();
-//
-//        Log.i(TAG, "getJsonDataFromResponse: result: " + result);
-//
-//        return result.toString();
-
-
-//        try {
-//            InputStream in = urlConnection.getInputStream();
-//
-//            Scanner scanner = new Scanner(in);
-//            scanner.useDelimiter("\\A");
-//
-//            boolean hasInput = scanner.hasNext();
-//
-//
-//            if (hasInput) {
-//                Log.i(TAG, "getJsonDataFromResponse: scanner.next: " + scanner.next());
-//                return scanner.next();
-//            } else {
-//                Log.i(TAG, "getJsonDataFromResponse: null");
-//                return null;
-//            }
-//        } finally {
-//            urlConnection.disconnect();
-//        }
 
     }
 
