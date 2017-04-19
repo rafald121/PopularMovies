@@ -22,6 +22,7 @@ import java.util.List;
 /**
  * Created by admin on 01.04.2017.
  */
+//http://api.themoviedb.org/3/movie/321612/reviews?api_key=6e339219779d415f85a8fb48b3a9a07b
 
 public class NetworkHelper {
     private static final String TAG = NetworkHelper.class.getSimpleName();

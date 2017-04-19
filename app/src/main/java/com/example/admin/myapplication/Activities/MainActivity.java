@@ -230,6 +230,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 recyclerView.setVisibility(View.INVISIBLE);
             } else {
                 //TODO is this appropriate to use Strings from reources in code, not in xml like line below?
+                /*Yes, it is appropriate to use. In fact, it is a recommended practice, particularly if you want to localize the strings (i.e support different languages).
+                Some helpful references on this:
+                https://medium.com/google-developer-experts/android-strings-xml-things-to-remember-c155025bb8bb
+                https://developer.android.com/guide/topics/resources/localization.html*/
                 showErrorLayout(getResources().getString(R.string.error_message_no_connection));
                 cancel(true);//abort
             }
@@ -277,7 +281,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                         try {
                             resultString = NetworkHelper.getJsonDataFromResponse(url);
-//                            TODO should I check in this place if resultString is not null? then go to next line
                             listOfMovies = NetworkHelper.convertJSONIntoList(resultString);
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -294,7 +297,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                         try {
                             resultString = NetworkHelper.getJsonDataFromResponse(url);
-//                            TODO should I check in this place if resultString is not null? then go to next line
                             listOfMovies = NetworkHelper.convertJSONIntoList(resultString);
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -314,37 +316,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
     }
-
-
-//    TODO should I use these methods:
-//    recyclerView.setVisibility(View.INVISIBLE);
-//    progressBar.setVisibility(View.INVISIBLE);
-//    errorLayout.setVisibility(View.VISIBLE);
-
-    //TODO or these:  ?
-//    private void setRecyclerViewVisible(RecyclerView recyclerview){
-//        recyclerview.setVisibility(View.VISIBLE);
-//    }
-//
-//    private void setRecyclerViewInvisible(RecyclerView recyclerview){
-//        recyclerview.setVisibility(View.INVISIBLE);
-//    }
-//
-//    private void setProgressBarVisible(ProgressBar progressbar){
-//        progressbar.setVisibility(View.VISIBLE);
-//    }
-//
-//    private void setProgressBarInvisible(ProgressBar progressbar){
-//        progressbar.setVisibility(View.INVISIBLE);
-//    }
-//
-//    private void setErrorLayoutVisible(LinearLayout linearlayout){
-//        linearlayout.setVisibility(View.VISIBLE);
-//    }
-//
-//    private void setErrorLayoutInvisible(LinearLayout linearlayout){
-//        linearlayout.setVisibility(View.INVISIBLE);
-//    }
-//
 
 }
