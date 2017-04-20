@@ -1,7 +1,6 @@
 package com.example.admin.myapplication.JSONUtilities;
 
-import com.example.admin.myapplication.Model.Movie;
-import com.example.admin.myapplication.Model.Review;
+import com.example.admin.myapplication.Model.MovieReview;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,14 +21,14 @@ public class MovieReviewsJSONParser {
     private final static String REVIEW_CONTENT = "content";
     private final static String REVIEW_URL = "url";
 
-    public static List<Review> convertJSONIntoList(String jsonString) throws JSONException {
+    public static List<MovieReview> convertJSONIntoList(String jsonString) throws JSONException {
 
         if(jsonString == null)
             return null;
         if( jsonString.equals("") && jsonString.length()==0)
             return null;
 
-        List<Review> listOfReviews = new ArrayList<>();
+        List<MovieReview> listOfMovieReviews = new ArrayList<>();
 
         JSONObject root = new JSONObject(jsonString);
         JSONArray reviewsArray = root.getJSONArray(JSON_RESULT);
@@ -43,12 +42,12 @@ public class MovieReviewsJSONParser {
             String content = reviewJSON.getString(REVIEW_CONTENT);
             String url = reviewJSON.getString(REVIEW_URL);
 
-            Review review = new Review(id, author, content, url);
+            MovieReview movieReview = new MovieReview(id, author, content, url);
 
-            listOfReviews.add(review);
+            listOfMovieReviews.add(movieReview);
         }
 
-        return listOfReviews;
+        return listOfMovieReviews;
     }
 
 }

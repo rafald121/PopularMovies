@@ -4,14 +4,14 @@ package com.example.admin.myapplication.Model;
  * Created by admin on 20.04.2017.
  */
 
-public class Review {
+public class MovieReview {
 
     private String idFromDBMovie;
     private String author;
     private String content;
     private String url;
 
-    public Review(String idFromDBMovie, String author, String content, String url) {
+    public MovieReview(String idFromDBMovie, String author, String content, String url) {
         this.idFromDBMovie = idFromDBMovie;
         this.author = author;
         this.content = content;
@@ -36,7 +36,7 @@ public class Review {
 
     @Override
     public String toString() {
-        return "Review{" +
+        return "MovieReview{" +
                 "idFromDBMovie='" + idFromDBMovie + '\'' +
                 ", author='" + author + '\'' +
                 ", content='" + content + '\'' +
