@@ -32,6 +32,9 @@ public class NetworkHelper {
 
     private static final String URL_TOP_RATED = "top_rated";
     private static final String URL_MOST_POPULAR = "popular";
+    private static final String URL_REVIEWS = "reviews";
+    private static final String URL_VIDEOS = "videos";
+
 
     private static final String URL_KEY = "?api_key=6e339219779d415f85a8fb48b3a9a07b";
 
@@ -52,6 +55,22 @@ public class NetworkHelper {
     public static Uri getUriMovieDetail(String id){
         return Uri.parse(URL_BASE).buildUpon()
                 .appendEncodedPath(id)
+                .appendEncodedPath(URL_KEY)
+                .build();
+    }
+
+    public static Uri getUriMovieReviews(String id) {
+        return Uri.parse(URL_BASE).buildUpon()
+                .appendEncodedPath(id)
+                .appendEncodedPath(URL_REVIEWS)
+                .appendEncodedPath(URL_KEY)
+                .build();
+    }
+
+    public static Uri getUriMovieVideos(String id){
+        return Uri.parse(URL_BASE).buildUpon()
+                .appendEncodedPath(id)
+                .appendEncodedPath(URL_VIDEOS)
                 .appendEncodedPath(URL_KEY)
                 .build();
     }
@@ -122,6 +141,4 @@ public class NetworkHelper {
         }
 
     }
-
-
 }
