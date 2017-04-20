@@ -16,6 +16,7 @@ import java.util.List;
 public class MovieDetailsJSONParser {
 
     private final static String JSON_RESULT = "results";
+    private final static String JSON_ID_FROM_NET = "id";
     private final static String JSON_ORIGINAL_TITLE = "original_title";
     private final static String JSON_RELEASE_DATE = "release_date";
     private final static String JSON_DETAILS = "overview";
@@ -40,6 +41,7 @@ public class MovieDetailsJSONParser {
 
             JSONObject movieJSON = moviesJSONArray.getJSONObject(i);
 
+            String idFromNet = movieJSON.getString(JSON_ID_FROM_NET);
             String title = movieJSON.getString(JSON_ORIGINAL_TITLE);
             String releaseDate = movieJSON.getString(JSON_RELEASE_DATE);
             String details = movieJSON.getString(JSON_DETAILS);
@@ -47,7 +49,7 @@ public class MovieDetailsJSONParser {
             String posterPath = movieJSON.getString(JSON_POSTER_PATH);
             String voteAvarage = movieJSON.getString(JSON_VOTE_AVARAGE);
 
-            Movie movie = new Movie(title, releaseDate, posterPath, voteAvarage, popularity, details);
+            Movie movie = new Movie(idFromNet, title, releaseDate, posterPath, voteAvarage, popularity, details);
 
             listOfMovies.add(movie);
 
@@ -66,6 +68,7 @@ public class MovieDetailsJSONParser {
 
         JSONObject root = new JSONObject(jsonString);
 
+        String idFromNet = root.getString(JSON_ID_FROM_NET);
         String title = root.getString(JSON_ORIGINAL_TITLE);
         String releaseDate = root.getString(JSON_RELEASE_DATE);
         String details = root.getString(JSON_DETAILS);
@@ -73,7 +76,7 @@ public class MovieDetailsJSONParser {
         String posterPath = root.getString(JSON_POSTER_PATH);
         String voteAvarage = root.getString(JSON_VOTE_AVARAGE);
 
-        return new Movie(title, releaseDate, posterPath, voteAvarage, popularity, details);
+        return new Movie(idFromNet, title, releaseDate, posterPath, voteAvarage, popularity, details);
 
 
     }
