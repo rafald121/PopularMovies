@@ -35,16 +35,23 @@ public class NetworkHelper {
 
     private static final String URL_KEY = "?api_key=6e339219779d415f85a8fb48b3a9a07b";
 
-    public static Uri mostPopular(){
+    public static Uri getUriMostPopular(){
         return Uri.parse(URL_BASE).buildUpon()
                 .appendEncodedPath(URL_MOST_POPULAR)
                 .appendEncodedPath(URL_KEY)
                 .build();
     }
 
-    public static Uri topRated(){
+    public static Uri getUriTopRated(){
         return Uri.parse(URL_BASE).buildUpon()
                 .appendEncodedPath(URL_TOP_RATED)
+                .appendEncodedPath(URL_KEY)
+                .build();
+    }
+
+    public static Uri getUriMovieDetail(String id){
+        return Uri.parse(URL_BASE).buildUpon()
+                .appendEncodedPath(id)
                 .appendEncodedPath(URL_KEY)
                 .build();
     }
