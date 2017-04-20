@@ -22,8 +22,8 @@ public class MovieDetailsJSONParser {
     private final static String JSON_POPULARITY = "popularity";
     private final static String JSON_VOTE_AVARAGE = "vote_average";
     private final static String JSON_POSTER_PATH = "poster_path";
-
-    public static List<Movie> convertJSONIntoList(String jsonString) throws JSONException {
+//TODO jeśli tylko lista to potrzebujemy tylko image i id filmu
+    public static List<Movie> convertJSONIntoMovieList(String jsonString) throws JSONException {
 
         if(jsonString == null)
             return null;
@@ -56,4 +56,26 @@ public class MovieDetailsJSONParser {
         return listOfMovies;
 
     }
+
+    public static Movie convertJSONIntoSingleMovie(String jsonString) throws JSONException {
+
+        if(jsonString == null)
+            return null;
+        if( jsonString.equals("") && jsonString.length()==0)
+            return null;
+
+        JSONObject root = new JSONObject(jsonString);
+
+        String title = root.getString(JSON_ORIGINAL_TITLE);
+        String releaseDate = root.getString(JSON_RELEASE_DATE);
+        String details = root.getString(JSON_DETAILS);
+        String popularity = root.getString(JSON_POPULARITY);
+        String posterPath = root.getString(JSON_POSTER_PATH);
+        String voteAvarage = root.getString(JSON_VOTE_AVARAGE);
+
+        return new Movie(title, releaseDate, posterPath, voteAvarage, popularity, details);
+
+
+    }
+
 }
