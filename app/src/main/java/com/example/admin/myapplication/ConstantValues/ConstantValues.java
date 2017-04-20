@@ -1,4 +1,4 @@
-package com.example.admin.myapplication;
+package com.example.admin.myapplication.ConstantValues;
 
 /**
  * Created by admin on 03.04.2017.

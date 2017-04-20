@@ -4,15 +4,10 @@ import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.admin.myapplication.ConstantValues;
 import com.example.admin.myapplication.R;
-import com.example.admin.myapplication.Utils.NetworkHelper;
 
 public class MovieDetails extends AppCompatActivity {
 
@@ -39,48 +34,50 @@ public class MovieDetails extends AppCompatActivity {
         actionBar = getSupportActionBar();
         setActionBarTitle();
 
+
         bind();
 
     }
 
+//todo bind not from passed from parent activity data but from request
     private void bind() {
-        String title = null;
-        String releaseDate = null;
-        String voteAvarage = null;
-        String details = null;
-        String posterLink = null;
+//        String title = null;
+//        String releaseDate = null;
+//        String voteAvarage = null;
+//        String details = null;
+//        String posterLink = null;
 
-        if(intentMovieDetails.hasExtra(ConstantValues.MOVIE_TITLE))
-            title = intentMovieDetails.getStringExtra(ConstantValues.MOVIE_TITLE);
-
-        if(intentMovieDetails.hasExtra(ConstantValues.MOVIE_RELEASE_DATE))
-            releaseDate = intentMovieDetails.getStringExtra(ConstantValues.MOVIE_RELEASE_DATE);
-
-        if(intentMovieDetails.hasExtra(ConstantValues.MOVIE_VOTE_AVARAGE))
-            voteAvarage = intentMovieDetails.getStringExtra(ConstantValues.MOVIE_VOTE_AVARAGE);
-
-        if(intentMovieDetails.hasExtra(ConstantValues.MOVIE_DETAILS))
-            details = intentMovieDetails.getStringExtra(ConstantValues.MOVIE_DETAILS);
-
-        if(intentMovieDetails.hasExtra(ConstantValues.MOVIE_POSTERS))
-            posterLink = NetworkHelper.URL_PICTURE_BASE + intentMovieDetails.getStringExtra(ConstantValues.MOVIE_POSTERS);
-
-
-        textViewTitle.setText(title);
-        textViewReleaseDate.setText(releaseDate);
-        textViewVoteAvarage.setText(voteAvarage);
-        textViewDetails.setText(details);
-
-        Glide.with(MovieDetails.this).load(posterLink)
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(imageViewPoster);
+//        if(intentMovieDetails.hasExtra(ConstantValues.MOVIE_TITLE))
+//            title = intentMovieDetails.getStringExtra(ConstantValues.MOVIE_TITLE);
+//
+//        if(intentMovieDetails.hasExtra(ConstantValues.MOVIE_RELEASE_DATE))
+//            releaseDate = intentMovieDetails.getStringExtra(ConstantValues.MOVIE_RELEASE_DATE);
+//
+//        if(intentMovieDetails.hasExtra(ConstantValues.MOVIE_VOTE_AVARAGE))
+//            voteAvarage = intentMovieDetails.getStringExtra(ConstantValues.MOVIE_VOTE_AVARAGE);
+//
+//        if(intentMovieDetails.hasExtra(ConstantValues.MOVIE_DETAILS))
+//            details = intentMovieDetails.getStringExtra(ConstantValues.MOVIE_DETAILS);
+//
+//        if(intentMovieDetails.hasExtra(ConstantValues.MOVIE_POSTERS))
+//            posterLink = NetworkHelper.URL_PICTURE_BASE + intentMovieDetails.getStringExtra(ConstantValues.MOVIE_POSTERS);
+//
+//
+//        textViewTitle.setText(title);
+//        textViewReleaseDate.setText(releaseDate);
+//        textViewVoteAvarage.setText(voteAvarage);
+//        textViewDetails.setText(details);
+//
+//        Glide.with(MovieDetails.this).load(posterLink)
+//                .crossFade()
+//                .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                .into(imageViewPoster);
 
     }
 
     private void setActionBarTitle() {
-        if(intentMovieDetails.hasExtra(ConstantValues.MOVIE_TITLE))
-            actionBar.setTitle(intentMovieDetails.getStringExtra(ConstantValues.MOVIE_TITLE));
+//        if(intentMovieDetails.hasExtra(ConstantValues.MOVIE_TITLE))
+//            actionBar.setTitle(intentMovieDetails.getStringExtra(ConstantValues.MOVIE_TITLE));
     }
 
 }

@@ -7,22 +7,21 @@ package com.example.admin.myapplication.Model;
 public class MovieVideo {
 
     private String YTname;
-    private String idFromDBMovie;
+    private String id;
     private String YTkey;
 
-    public MovieVideo(String YTname, String idFromDBMovie, String YTkey) {
+    public MovieVideo(String id, String YTkey, String YTname) {
         this.YTname = YTname;
-        this.idFromDBMovie = idFromDBMovie;
+        this.id = id;
         this.YTkey = YTkey;
     }
-
 
     public String getYTname() {
         return YTname;
     }
 
     public String getIdFromDBMovie() {
-        return idFromDBMovie;
+        return id;
     }
 
     public String getYTkey() {
@@ -33,7 +32,7 @@ public class MovieVideo {
     public String toString() {
         return "MovieVideo{" +
                 "YTkey='" + YTkey + '\'' +
-                ", idFromDBMovie='" + idFromDBMovie + '\'' +
+                ", idFromDBMovie='" + id + '\'' +
                 ", YTname='" + YTname + '\'' +
                 '}';
     }

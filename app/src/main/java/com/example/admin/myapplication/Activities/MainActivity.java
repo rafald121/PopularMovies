@@ -21,7 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.admin.myapplication.Adapters.MovieAdapter;
-import com.example.admin.myapplication.ConstantValues;
+import com.example.admin.myapplication.JSONUtilities.MovieDetailsJSONParser;
 import com.example.admin.myapplication.Model.Movie;
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.Utils.NetworkHelper;
@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, MovieAdapter.RecyclerItemClickListener{
 
@@ -149,18 +148,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onListItemClick(int clickedItemPosition) {
 
         Intent intentMovieDetails = new Intent(MainActivity.this, MovieDetails.class);
+        //TODO pass only id to another activity
 
-        String movieTitle = listOfMovies.get(clickedItemPosition).getTitle();
-        String movieReleaseDate = listOfMovies.get(clickedItemPosition).getReleaseDate();
-        String moviePoster = listOfMovies.get(clickedItemPosition).getMoviePoster();
-        String movieVoteAvarage = listOfMovies.get(clickedItemPosition).getVoteAvarage();
-        String movieDetails = listOfMovies.get(clickedItemPosition).getDetails();
-
-        intentMovieDetails.putExtra(ConstantValues.MOVIE_TITLE, movieTitle);
-        intentMovieDetails.putExtra(ConstantValues.MOVIE_RELEASE_DATE, movieReleaseDate);
-        intentMovieDetails.putExtra(ConstantValues.MOVIE_POSTERS, moviePoster);
-        intentMovieDetails.putExtra(ConstantValues.MOVIE_VOTE_AVARAGE, movieVoteAvarage);
-        intentMovieDetails.putExtra(ConstantValues.MOVIE_DETAILS, movieDetails);
+//
+//        String movieTitle = listOfMovies.get(clickedItemPosition).getTitle();
+//        String movieReleaseDate = listOfMovies.get(clickedItemPosition).getReleaseDate();
+//        String moviePoster = listOfMovies.get(clickedItemPosition).getMoviePoster();
+//        String movieVoteAvarage = listOfMovies.get(clickedItemPosition).getVoteAvarage();
+//        String movieDetails = listOfMovies.get(clickedItemPosition).getDetails();
+//
+//        intentMovieDetails.putExtra(ConstantValues.MOVIE_TITLE, movieTitle);
+//        intentMovieDetails.putExtra(ConstantValues.MOVIE_RELEASE_DATE, movieReleaseDate);
+//        intentMovieDetails.putExtra(ConstantValues.MOVIE_POSTERS, moviePoster);
+//        intentMovieDetails.putExtra(ConstantValues.MOVIE_VOTE_AVARAGE, movieVoteAvarage);
+//        intentMovieDetails.putExtra(ConstantValues.MOVIE_DETAILS, movieDetails);
 
         startActivity(intentMovieDetails);
 
@@ -281,7 +282,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                         try {
                             resultString = NetworkHelper.getJsonDataFromResponse(url);
-                            listOfMovies = NetworkHelper.convertJSONIntoList(resultString);
+                            listOfMovies = MovieDetailsJSONParser.convertJSONIntoList(resultString);
                         } catch (IOException e) {
                             e.printStackTrace();
                         } catch (JSONException e) {
@@ -297,7 +298,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                         try {
                             resultString = NetworkHelper.getJsonDataFromResponse(url);
-                            listOfMovies = NetworkHelper.convertJSONIntoList(resultString);
+                            listOfMovies = MovieDetailsJSONParser.convertJSONIntoList(resultString);
                         } catch (IOException e) {
                             e.printStackTrace();
                         } catch (JSONException e) {
