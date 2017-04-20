@@ -33,6 +33,15 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+//TODO UDACITY:
+// /*
+//  czy lepiej pobierać w Main Activity tylko id i obrazek a w details całą reszte( jeśli klikniemy) czy od razu całe obiekty juz w MainActivity
+//
+//
+//
+// */
+
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, MovieAdapter.RecyclerItemClickListener{
 
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -96,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+
     private void setupRecyclerView(RecyclerView recyclerView) {
         gridLayoutManager = new GridLayoutManager(MainActivity.this, 3);
 
@@ -148,6 +158,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onListItemClick(int clickedItemPosition) {
 
         Intent intentMovieDetails = new Intent(MainActivity.this, MovieDetails.class);
+
         //TODO pass only id to another activity
 
 //
@@ -216,8 +227,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
-
-    private class MovieQueryTask extends AsyncTask<String, Void, List<Movie>> {
+//TODO UDACITY jak oddzielic to od oddzielnej klasy jeśli w tej klasie \/ używamy metod z klasy MainActivity
+    public class MovieQueryTask extends AsyncTask<String, Void, List<Movie>> {
 
         @Override
         protected void onPreExecute() {
@@ -230,6 +241,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 errorLayout.setVisibility(View.INVISIBLE);
                 recyclerView.setVisibility(View.INVISIBLE);
             } else {
+                //TODO LOAD FROM DATABASE WHEN NETWORK IS NOT AVAILABLE
                 //TODO is this appropriate to use Strings from reources in code, not in xml like line below?
                 /*Yes, it is appropriate to use. In fact, it is a recommended practice, particularly if you want to localize the strings (i.e support different languages).
                 Some helpful references on this:
@@ -239,6 +251,59 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 cancel(true);//abort
             }
 
+        }
+
+        @Override
+        protected List<Movie> doInBackground(String... params) {
+
+            if (params.length != 0 && !params[0].equals("") && params[0].length() != 0) {
+
+                String urlType = params[0];
+                String resultString;
+                listOfMovies = new ArrayList<>();
+                URL url = null;
+                Uri uri;
+
+                switch (urlType) {
+                    case MOST_POPULAR:
+
+                        uri = NetworkHelper.getUriMostPopular();
+                        url = NetworkHelper.buildURL(uri);
+
+                        try {
+                            resultString = NetworkHelper.getJsonDataFromResponse(url);
+                            listOfMovies = MovieDetailsJSONParser.convertJSONIntoMovieList(resultString);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        return listOfMovies;
+
+                    case TOP_RATED:
+
+                        uri = NetworkHelper.getUriTopRated();
+                        url = NetworkHelper.buildURL(uri);
+
+                        try {
+                            resultString = NetworkHelper.getJsonDataFromResponse(url);
+                            listOfMovies = MovieDetailsJSONParser.convertJSONIntoMovieList(resultString);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        return listOfMovies;
+                }
+
+
+            } else {
+                showErrorLayout(getResources().getString(R.string.error_message_bad_url_syntax));
+            }
+
+            return null;
         }
 
         @Override
@@ -261,59 +326,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         protected void onProgressUpdate(Void... values) {
             super.onProgressUpdate(values);
-        }
-
-        @Override
-        protected List<Movie> doInBackground(String... params) {
-
-            if (params.length != 0 && !params[0].equals("") && params[0].length() != 0) {
-
-                String urlType = params[0];
-                String resultString = null;
-                listOfMovies = new ArrayList<>();
-                URL url = null;
-                Uri uri;
-
-                switch (urlType) {
-                    case MOST_POPULAR:
-
-                        uri = NetworkHelper.mostPopular();
-                        url = NetworkHelper.buildURL(uri);
-
-                        try {
-                            resultString = NetworkHelper.getJsonDataFromResponse(url);
-                            listOfMovies = MovieDetailsJSONParser.convertJSONIntoList(resultString);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                        return listOfMovies;
-
-                    case TOP_RATED:
-
-                        uri = NetworkHelper.topRated();
-                        url = NetworkHelper.buildURL(uri);
-
-                        try {
-                            resultString = NetworkHelper.getJsonDataFromResponse(url);
-                            listOfMovies = MovieDetailsJSONParser.convertJSONIntoList(resultString);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                        return listOfMovies;
-                }
-
-
-            } else {
-                showErrorLayout(getResources().getString(R.string.error_message_bad_url_syntax));
-            }
-
-            return null;
         }
 
     }
