@@ -32,7 +32,7 @@ import butterknife.ButterKnife;
 public class MovieDetails extends AppCompatActivity
 //        implements  LoaderManager.LoaderCallbacks<MovieDetails>
 {
-    private static final String TAG_MovieDetails = MovieDetails.class.getSimpleName();
+    private static final String TAG = MovieDetails.class.getSimpleName();
 
     @BindView(R.id.movie_title)         TextView textViewTitle;
     @BindView(R.id.movie_release_date)  TextView textViewReleaseDate;
@@ -57,10 +57,15 @@ public class MovieDetails extends AppCompatActivity
         ButterKnife.bind(this);
 
         intentMovieDetails = getIntent();
-        movieId = intentMovieDetails.getStringExtra(ConstantValues.MOVIE_ID_FROM_NET);
+        if(intentMovieDetails.hasExtra(ConstantValues.MOVIE_ID_FROM_NET)) {
+            movieId = intentMovieDetails.getStringExtra(ConstantValues.MOVIE_ID_FROM_NET);
+            Log.i(TAG, "onCreate: movieID to: " + movieId);
+        }
+        else
+            Log.i(TAG, "onCreate: error kurwa");
 
         new AsyncTaskMovieDetail().execute(movieId);
-
+        new AsyncTaskMovieReviews().execute(movieId);
 
     }
 
@@ -102,20 +107,10 @@ public class MovieDetails extends AppCompatActivity
         @Override
         protected Movie doInBackground(String... params) {
 
-            if(params == null || params[0] == null){
-                Log.i(TAG_AT_MovieDetails, "doInBackground: 1");
+            if(!validateParams(params)){
+//TODO ZRob cos
                 return null;
-            }
 
-            if(params.length==0 && params[0].equals("")){
-                Log.i(TAG_AT_MovieDetails, "doInBackground: 2");
-                //TODO zabezpieczyc że błąd
-                return null;
-            }
-
-            if(params[0].length() == 0) {
-                Log.i(TAG_AT_MovieDetails, "doInBackground: 3");
-                return null;
             }
 
             Movie movieDetails = null;
@@ -124,7 +119,6 @@ public class MovieDetails extends AppCompatActivity
 
             Uri uri = NetworkHelper.getUriMovieDetail(id);
             URL url = NetworkHelper.buildURL(uri);
-
             try{
                 resultString = NetworkHelper.getJsonDataFromResponse(url);
                 movieDetails = MovieDetailsJSONParser.convertJSONIntoSingleMovie(resultString);
@@ -140,6 +134,9 @@ public class MovieDetails extends AppCompatActivity
 
         @Override
         protected void onPostExecute(Movie movie) {
+            if(movie == null){
+                Log.i(TAG, "onPostExecute: movie is null");
+            }
             bind(movie);
             setActionBarTitle(movie.getTitle());
         }
@@ -157,23 +154,13 @@ public class MovieDetails extends AppCompatActivity
 
         @Override
         protected List<MovieReview> doInBackground(String... params) {
-            if(params == null || params[0] == null){
-                Log.i(TAG_AT_MovieReviews, "doInBackground: 1");
+
+            if(!validateParams(params)){
+                //TODO zrob cos
                 return null;
             }
 
-            if(params.length==0 && params[0].equals("")){
-                Log.i(TAG_AT_MovieReviews, "doInBackground: 2");
-                //TODO zabezpieczyc że błąd
-                return null;
-            }
-
-            if(params[0].length() == 0) {
-                Log.i(TAG_AT_MovieReviews, "doInBackground: 3");
-                return null;
-            }
-
-            List<MovieReview> listOfMovieReviews;
+            List<MovieReview> listOfMovieReviews = null;
             String resultString;
             String id = params[0];
 
@@ -189,13 +176,35 @@ public class MovieDetails extends AppCompatActivity
                 e.printStackTrace();
             }
 
-            return null;
+            return listOfMovieReviews;
         }
 
         @Override
         protected void onPostExecute(List<MovieReview> movieReview) {
+            if(movieReview!=null)
+                Log.i(TAG_AT_MovieReviews, "onPostExecute: " + movieReview.toString());
+            else
+                Log.i(TAG, "onPostExecute: list is null");
+
             super.onPostExecute(movieReview);
         }
+    }
+
+
+    private boolean validateParams(String[] params){
+        if(params == null || params[0] == null){
+            return false;
+        }
+
+        if(params.length==0 && params[0].equals("")){
+            return false;
+        }
+
+        if(params[0].length() == 0) {
+            return false;
+        }
+
+        return true;
     }
 
     //TODO UDACITY czy moze byc cos innego niz Cursor w Loaderze \/
