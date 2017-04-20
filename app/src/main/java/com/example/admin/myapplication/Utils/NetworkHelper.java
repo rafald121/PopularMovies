@@ -116,46 +116,5 @@ public class NetworkHelper {
 
     }
 
-    public static List<Movie> convertJSONIntoList(String jsonString) throws JSONException {
 
-        if(jsonString == null)
-            return null;
-        if( jsonString.equals("") && jsonString.length()==0)
-            return null;
-
-        final String JSON_RESULT = "results";
-        final String JSON_ORIGINAL_TITLE = "original_title";
-        final String JSON_RELEASE_DATE = "release_date";
-        final String JSON_DETAILS = "overview";
-        final String JSON_POPULARITY = "popularity";
-        final String JSON_VOTE_AVARAGE = "vote_average";
-        final String JSON_POSTER_PATH = "poster_path";
-
-        List<Movie> listOfMovies = new ArrayList<>();
-
-        JSONObject root = new JSONObject(jsonString);
-        JSONArray moviesJSONArray = root.getJSONArray(JSON_RESULT);
-
-        String title,releaseDate, details, popularity, posterPath, voteAvarage;
-
-        for( int i = 0 ; i < moviesJSONArray.length(); i++){
-
-            JSONObject movieJSON = moviesJSONArray.getJSONObject(i);
-
-            title = movieJSON.getString(JSON_ORIGINAL_TITLE);
-            releaseDate = movieJSON.getString(JSON_RELEASE_DATE);
-            details = movieJSON.getString(JSON_DETAILS);
-            popularity = movieJSON.getString(JSON_POPULARITY);
-            posterPath = movieJSON.getString(JSON_POSTER_PATH);
-            voteAvarage = movieJSON.getString(JSON_VOTE_AVARAGE);
-
-            Movie movie = new Movie(title, releaseDate, posterPath, voteAvarage, popularity, details);
-
-            listOfMovies.add(movie);
-
-        }
-
-        return listOfMovies;
-
-    }
 }
