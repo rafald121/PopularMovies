@@ -53,18 +53,27 @@ public class NetworkHelper {
     }
 
     public static Uri getUriMovieDetail(String id){
-        return Uri.parse(URL_BASE).buildUpon()
+
+        String uriString = Uri.parse(URL_BASE).buildUpon()
                 .appendEncodedPath(id)
-                .appendEncodedPath(URL_KEY)
-                .build();
+                .build().toString();
+
+        uriString = uriString + URL_KEY;
+
+        return Uri.parse(uriString);
     }
 
     public static Uri getUriMovieReviews(String id) {
-        return Uri.parse(URL_BASE).buildUpon()
+
+        String uriString = Uri.parse(URL_BASE).buildUpon()
                 .appendEncodedPath(id)
                 .appendEncodedPath(URL_REVIEWS)
-                .appendEncodedPath(URL_KEY)
-                .build();
+                .build().toString();
+
+        uriString += URL_KEY;
+
+        return Uri.parse(uriString);
+
     }
 
     public static Uri getUriMovieVideos(String id){
