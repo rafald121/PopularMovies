@@ -20,4 +20,6 @@ public class ConstantValues {
     public static final String MOVIE_VOTE_AVARAGE = "vote_avarage";
     public static final String MOVIE_DETAILS = "movie_details";
 
+    public static final String MOVIE_ID_FROM_NET = "movie_id_net";
+
 }
