@@ -21,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.admin.myapplication.Adapters.MovieAdapter;
+import com.example.admin.myapplication.ConstantValues.ConstantValues;
 import com.example.admin.myapplication.JSONUtilities.MovieDetailsJSONParser;
 import com.example.admin.myapplication.Model.Movie;
 import com.example.admin.myapplication.R;
@@ -105,9 +106,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+    private void sortByFavourite() {
+        //TODO show movies from content provider with LoaderManager;
+    }
 
     private void setupRecyclerView(RecyclerView recyclerView) {
-        gridLayoutManager = new GridLayoutManager(MainActivity.this, 3);
+        gridLayoutManager = new GridLayoutManager(MainActivity.this, 5);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(gridLayoutManager);
@@ -132,6 +136,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.sort_by_top_rated:
                 sortByTopRated();
                 return true;
+            case R.id.sort_by_favourite:
+                sortByFavourite();
             case R.id.reload_data:
                 switch (SELECTED_TYPE){
                     case TOP_RATED:
@@ -157,22 +163,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onListItemClick(int clickedItemPosition) {
 
+        String idFromMovieDB = listOfMovies.get(clickedItemPosition).getIdFromDBMovie();
+        //TODO check if it pass appopriate ID FROM NET
         Intent intentMovieDetails = new Intent(MainActivity.this, MovieDetails.class);
-
-        //TODO pass only id to another activity
-
-//
-//        String movieTitle = listOfMovies.get(clickedItemPosition).getTitle();
-//        String movieReleaseDate = listOfMovies.get(clickedItemPosition).getReleaseDate();
-//        String moviePoster = listOfMovies.get(clickedItemPosition).getMoviePoster();
-//        String movieVoteAvarage = listOfMovies.get(clickedItemPosition).getVoteAvarage();
-//        String movieDetails = listOfMovies.get(clickedItemPosition).getDetails();
-//
-//        intentMovieDetails.putExtra(ConstantValues.MOVIE_TITLE, movieTitle);
-//        intentMovieDetails.putExtra(ConstantValues.MOVIE_RELEASE_DATE, movieReleaseDate);
-//        intentMovieDetails.putExtra(ConstantValues.MOVIE_POSTERS, moviePoster);
-//        intentMovieDetails.putExtra(ConstantValues.MOVIE_VOTE_AVARAGE, movieVoteAvarage);
-//        intentMovieDetails.putExtra(ConstantValues.MOVIE_DETAILS, movieDetails);
+        intentMovieDetails.putExtra(ConstantValues.MOVIE_ID_FROM_NET, idFromMovieDB);
 
         startActivity(intentMovieDetails);
 

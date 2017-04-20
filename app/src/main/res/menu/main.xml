@@ -22,6 +22,10 @@
         android:orderInCategory="3"
         app:showAsAction="never"/>
 
-
+    <item
+        android:id="@+id/sort_by_favourite"
+        android:title="@string/sort_by_favourite"
+        android:orderInCategory="4"
+        app:showAsAction="never"/>
 
 </menu>
