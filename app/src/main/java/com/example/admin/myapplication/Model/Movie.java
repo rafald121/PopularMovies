@@ -6,6 +6,7 @@ package com.example.admin.myapplication.Model;
 
 public class Movie  {
 
+    private String idFromDBMovie;
     private String title;
     private String releaseDate;
     private String moviePoster;
@@ -20,6 +21,20 @@ public class Movie  {
         this.voteAvarage = voteAvarage;
         this.popularity = popularity;
         this.details = details;
+    }
+
+    public Movie(String idFromDBMovie, String title, String releaseDate, String moviePoster, String voteAvarage, String popularity, String details) {
+        this.idFromDBMovie = idFromDBMovie;
+        this.title = title;
+        this.releaseDate = releaseDate;
+        this.moviePoster = moviePoster;
+        this.voteAvarage = voteAvarage;
+        this.popularity = popularity;
+        this.details = details;
+    }
+
+    public String getIdFromDBMovie() {
+        return idFromDBMovie;
     }
 
     public String getTitle() {
@@ -49,6 +64,7 @@ public class Movie  {
     @Override
     public String toString() {
         return "Movie{" +
+                "id='" + idFromDBMovie + '\'' +
                 "title='" + title + '\'' +
                 ", releaseDate='" + releaseDate + '\'' +
                 ", moviePoster='" + moviePoster + '\'' +
