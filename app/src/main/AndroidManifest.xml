@@ -11,6 +11,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".Activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,7 +19,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.MovieDetails"></activity>
+
+        <activity android:name=".Activities.MovieDetails"
+            android:parentActivityName=".Activities.MainActivity">
+
+            <!--TODO co zmienia \/-->
+            <!--<meta-data-->
+                <!--android:name="android.support.PARENT_ACTIVITY"-->
+                <!--android:value=".Activities.MainActivity"/>-->
+
+        </activity>
+
+        <provider
+            android:authorities="com.example.admin.myapplication"
+            android:name="com.example.admin.myapplication.Database.MovieDbProvider"
+            android:exported="false"/>
+
     </application>
 
 </manifest>
