@@ -15,8 +15,10 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.admin.myapplication.ConstantValues.ConstantValues;
 import com.example.admin.myapplication.JSONUtilities.MovieDetailsJSONParser;
 import com.example.admin.myapplication.JSONUtilities.MovieReviewsJSONParser;
+import com.example.admin.myapplication.JSONUtilities.MovieVideosJSONParser;
 import com.example.admin.myapplication.Model.Movie;
 import com.example.admin.myapplication.Model.MovieReview;
+import com.example.admin.myapplication.Model.MovieVideo;
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.Utils.NetworkHelper;
 
@@ -59,14 +61,13 @@ public class MovieDetails extends AppCompatActivity
         intentMovieDetails = getIntent();
         if(intentMovieDetails.hasExtra(ConstantValues.MOVIE_ID_FROM_NET)) {
             movieId = intentMovieDetails.getStringExtra(ConstantValues.MOVIE_ID_FROM_NET);
-            Log.i(TAG, "onCreate: movieID to: " + movieId);
+        } else {
+            //TODO zrob komunikat jesli nie pobierze ID
         }
-        else
-            Log.i(TAG, "onCreate: error kurwa");
 
         new AsyncTaskMovieDetail().execute(movieId);
         new AsyncTaskMovieReviews().execute(movieId);
-
+        new AsyncTaskMovieVideos().execute(movieId);
     }
 
     private void bind(Movie movie) {
@@ -190,6 +191,55 @@ public class MovieDetails extends AppCompatActivity
         }
     }
 
+    public class AsyncTaskMovieVideos extends AsyncTask<String, Void, List<MovieVideo>> {
+
+        private final String TAG_AT_MovieVideos = AsyncTaskMovieVideos.class.getSimpleName();
+
+        @Override
+        protected void onPreExecute() {
+
+            super.onPreExecute();
+        }
+
+        @Override
+        protected List<MovieVideo> doInBackground(String... params) {
+
+            if(!validateParams(params)) {
+                //TODO zrob cos
+                return null;
+            }
+
+            List<MovieVideo> listOfMovieVideo = null;
+            String resultString;
+            String id = params[0];
+
+            Uri uri = NetworkHelper.getUriMovieVideos(id);
+            URL url = NetworkHelper.buildURL(uri);
+
+            try{
+                resultString = NetworkHelper.getJsonDataFromResponse(url);
+                listOfMovieVideo = MovieVideosJSONParser.convertJSONIntoMovieVideoList(resultString);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return listOfMovieVideo;
+        }
+
+        @Override
+        protected void onPostExecute(List<MovieVideo> movieVideos) {
+            if(movieVideos == null) {
+                //TODO zabezpieczyc
+                Log.i(TAG, "onPostExecute: list is null");
+            } else {
+
+                Log.i(TAG, "onPostExecute: git");
+            }
+            super.onPostExecute(movieVideos);
+        }
+    }
 
     private boolean validateParams(String[] params){
         if(params == null || params[0] == null){
