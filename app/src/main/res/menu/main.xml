@@ -29,4 +29,12 @@
         android:orderInCategory="4"
         app:showAsAction="never"/>
 
+    <item
+        android:id="@+id/menu_settings"
+        android:title="@string/main_activity_menu_settings"
+        android:orderInCategory="5"
+        app:showAsAction="never"/>
+
+
+
 </menu>

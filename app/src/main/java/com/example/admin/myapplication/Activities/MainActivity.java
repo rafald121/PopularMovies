@@ -25,6 +25,7 @@ import com.example.admin.myapplication.ConstantValues.ConstantValues;
 import com.example.admin.myapplication.JSONUtilities.MovieDetailsJSONParser;
 import com.example.admin.myapplication.Model.Movie;
 import com.example.admin.myapplication.R;
+import com.example.admin.myapplication.Settings.SettingsActivity;
 import com.example.admin.myapplication.Utils.NetworkHelper;
 
 import org.json.JSONException;
@@ -133,11 +134,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.sort_by_popular:
                 sortByPopular();
                 return true;
+
             case R.id.sort_by_top_rated:
                 sortByTopRated();
                 return true;
+
             case R.id.sort_by_favourite:
                 sortByFavourite();
+                return true;
+
             case R.id.reload_data:
                 switch (SELECTED_TYPE){
                     case TOP_RATED:
@@ -149,10 +154,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     default:
                         Log.e(TAG, "onOptionsItemSelected: ERROR");
                 }
+                break;
+
+            case R.id.menu_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+
 
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 
     @Override
     public void onClick(View v) {
