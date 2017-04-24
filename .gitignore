@@ -36,3 +36,5 @@ app/app\.iml
 \.idea/workspace\.xml
 
 \.idea/misc\.xml
+
+\.idea/vcs\.xml
