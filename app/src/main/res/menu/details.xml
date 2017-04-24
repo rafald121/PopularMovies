@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".Activities.MovieDetails">
+
     <item
         android:id="@+id/select_favourite"
         android:icon="@drawable/ic_favorite_border_black_24dp"
         android:orderInCategory="1"
         app:showAsAction="always"/>
+
 </menu>
