@@ -45,11 +45,10 @@ public class MovieDetailsJSONParser {
             String title = movieJSON.getString(JSON_ORIGINAL_TITLE);
             String releaseDate = movieJSON.getString(JSON_RELEASE_DATE);
             String details = movieJSON.getString(JSON_DETAILS);
-            String popularity = movieJSON.getString(JSON_POPULARITY);
             String posterPath = movieJSON.getString(JSON_POSTER_PATH);
             String voteAvarage = movieJSON.getString(JSON_VOTE_AVARAGE);
 
-            Movie movie = new Movie(idFromNet, title, releaseDate, posterPath, voteAvarage, popularity, details);
+            Movie movie = new Movie(idFromNet, title, releaseDate, posterPath, voteAvarage, details);
 
             listOfMovies.add(movie);
 
@@ -72,11 +71,10 @@ public class MovieDetailsJSONParser {
         String title = root.getString(JSON_ORIGINAL_TITLE);
         String releaseDate = root.getString(JSON_RELEASE_DATE);
         String details = root.getString(JSON_DETAILS);
-        String popularity = root.getString(JSON_POPULARITY);
         String posterPath = root.getString(JSON_POSTER_PATH);
         String voteAvarage = root.getString(JSON_VOTE_AVARAGE);
 
-        return new Movie(idFromNet, title, releaseDate, posterPath, voteAvarage, popularity, details);
+        return new Movie(idFromNet, title, releaseDate, posterPath, voteAvarage, details);
 
 
     }
