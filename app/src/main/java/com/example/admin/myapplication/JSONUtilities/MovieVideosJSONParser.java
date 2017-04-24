@@ -15,10 +15,10 @@ import java.util.List;
 
 public class MovieVideosJSONParser {
 
-    private static final String RESULT = "result";
-    private static final String MOVIE_ID = "movieId";
-    private static final String MOVIE_KEY = "movieKey";
-    private static final String MOVIE_NAME = "movieName";
+    private static final String RESULT = "results";
+    private static final String MOVIE_ID = "id";
+    private static final String MOVIE_KEY = "key";
+    private static final String MOVIE_NAME = "name";
 
     public static List<MovieVideo> convertJSONIntoMovieVideoList(String jsonString) throws JSONException{
 
