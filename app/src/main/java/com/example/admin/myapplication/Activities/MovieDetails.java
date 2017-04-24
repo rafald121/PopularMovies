@@ -6,13 +6,20 @@ import android.os.AsyncTask;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.admin.myapplication.Adapters.MovieReviewAdapter;
 import com.example.admin.myapplication.ConstantValues.ConstantValues;
+import com.example.admin.myapplication.Interfaces.MovieReviewClickListener;
 import com.example.admin.myapplication.JSONUtilities.MovieDetailsJSONParser;
 import com.example.admin.myapplication.JSONUtilities.MovieReviewsJSONParser;
 import com.example.admin.myapplication.JSONUtilities.MovieVideosJSONParser;
@@ -31,7 +38,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MovieDetails extends AppCompatActivity
+public class MovieDetails extends AppCompatActivity implements MovieReviewClickListener
 //        implements  LoaderManager.LoaderCallbacks<MovieDetails>
 {
     private static final String TAG = MovieDetails.class.getSimpleName();
@@ -42,7 +49,9 @@ public class MovieDetails extends AppCompatActivity
     @BindView(R.id.movie_details)       TextView textViewDetails;
     @BindView(R.id.movie_poster)        ImageView imageViewPoster;
 
-    @BindView(R.id.movieReview)         TextView reviewwwTEMP;
+    @BindView(R.id.recyclerview_review) RecyclerView recyclerViewReviews;
+
+    private MovieReviewAdapter movieReviewAdapter;
 
     private ActionBar actionBar = null;
 
@@ -67,7 +76,37 @@ public class MovieDetails extends AppCompatActivity
 
         new AsyncTaskMovieDetail().execute(movieId);
         new AsyncTaskMovieReviews().execute(movieId);
-        new AsyncTaskMovieVideos().execute(movieId);
+//        new AsyncTaskMovieVideos().execute(movieId);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.details, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.select_favourite){
+            if(isFavourite(movieId)){
+                setFavouriteImage(false);
+            } else{
+                setFavouriteImage(true);
+            }
+        }
+            Toast.makeText(this, "hao", Toast.LENGTH_SHORT).show();
+
+        return true;
+    }
+
+    private void setFavouriteImage(boolean isFavourite){
+        //todo change favourite star image
+
+    }
+
+    private boolean isFavourite(String movieId) {
+        return false;
     }
 
     private void bind(Movie movie) {
@@ -76,7 +115,7 @@ public class MovieDetails extends AppCompatActivity
         String releaseDate = movie.getReleaseDate();
         String voteAvarage = movie.getVoteAvarage();
         String details = movie.getDetails();
-        String posterLink = movie.getMoviePoster();
+        String posterLink = NetworkHelper.getUriMovieImage(movie.getMoviePoster()).toString();
 
         textViewTitle.setText(title);
         textViewReleaseDate.setText(releaseDate);
@@ -94,6 +133,23 @@ public class MovieDetails extends AppCompatActivity
         actionBar.setTitle(title);
     }
 
+
+    private void populateReviewRecyclerView(List<MovieReview> movieReview) {
+        movieReviewAdapter = new MovieReviewAdapter(movieReview, this, this);
+
+        LinearLayoutManager recyclerManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        recyclerViewReviews.setLayoutManager(recyclerManager);
+        recyclerViewReviews.setHasFixedSize(true);
+
+        recyclerViewReviews.setAdapter(movieReviewAdapter);
+
+    }
+
+    @Override
+    public void movieReviewClickListener(String idFromNet) {
+        Log.i(TAG, "movieReviewClickListener: tag: " + idFromNet);
+        //todo open review from url (id from net)
+    }
 
     public class AsyncTaskMovieDetail extends AsyncTask<String, Void, Movie>{
 
@@ -132,7 +188,6 @@ public class MovieDetails extends AppCompatActivity
             return movieDetails;
 
         }
-
         @Override
         protected void onPostExecute(Movie movie) {
             if(movie == null){
@@ -141,6 +196,7 @@ public class MovieDetails extends AppCompatActivity
             bind(movie);
             setActionBarTitle(movie.getTitle());
         }
+
     }
 
     public class AsyncTaskMovieReviews extends AsyncTask<String, Void, List<MovieReview>>{
@@ -179,13 +235,14 @@ public class MovieDetails extends AppCompatActivity
 
             return listOfMovieReviews;
         }
-
         @Override
         protected void onPostExecute(List<MovieReview> movieReview) {
-            if(movieReview!=null)
-                Log.i(TAG_AT_MovieReviews, "onPostExecute: " + movieReview.toString());
-            else
+            if(movieReview!=null){
+                populateReviewRecyclerView(movieReview);
+            }
+            else {
                 Log.i(TAG, "onPostExecute: list is null");
+            }
 
             super.onPostExecute(movieReview);
         }
@@ -215,9 +272,12 @@ public class MovieDetails extends AppCompatActivity
 
             Uri uri = NetworkHelper.getUriMovieVideos(id);
             URL url = NetworkHelper.buildURL(uri);
-
+            Log.i(TAG, "doInBackground: qwe" + url);
             try{
                 resultString = NetworkHelper.getJsonDataFromResponse(url);
+
+                Log.i(TAG, "doInBackground: result: " + resultString);
+
                 listOfMovieVideo = MovieVideosJSONParser.convertJSONIntoMovieVideoList(resultString);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -234,8 +294,7 @@ public class MovieDetails extends AppCompatActivity
                 //TODO zabezpieczyc
                 Log.i(TAG, "onPostExecute: list is null");
             } else {
-
-                Log.i(TAG, "onPostExecute: git");
+                Log.i(TAG, "onPostExecute: git" + movieVideos.toString());
             }
             super.onPostExecute(movieVideos);
         }
