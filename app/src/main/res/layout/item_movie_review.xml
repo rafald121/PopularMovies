@@ -9,7 +9,9 @@
         tools:text="Maniek"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/item_movie_review_author" />
+        android:id="@+id/item_movie_review_author"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
 
     <TextView
         tools:text="Good movie!"
