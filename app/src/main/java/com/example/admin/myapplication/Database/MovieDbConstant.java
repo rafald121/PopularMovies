@@ -27,6 +27,7 @@ public class MovieDbConstant {
         public static final String COLUMN_RELEASE_DATE = "releaseDate";
         public static final String COLUMN_VOTE_AVARAGE = "voteAvarage";
         public static final String COLUMN_PLOT_SYNOPSIS = "plotSynopsis";
+        public static final String COLUMN_IMAGE_LINK = "imageLink";
         public static final String COLUMN_IMAGE = "image";
 
     }
