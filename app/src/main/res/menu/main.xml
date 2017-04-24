@@ -7,6 +7,7 @@
     <item
         android:id="@+id/reload_data"
         android:orderInCategory="1"
+        android:icon="@drawable/ic_refresh_black_24dp"
         android:title="@string/reload_data"
         app:showAsAction="always"/>
 
@@ -20,6 +21,18 @@
         android:id="@+id/sort_by_top_rated"
         android:title="@string/sort_by_top_rated"
         android:orderInCategory="3"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/sort_by_favourite"
+        android:title="@string/sort_by_favourite"
+        android:orderInCategory="4"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/menu_settings"
+        android:title="@string/main_activity_menu_settings"
+        android:orderInCategory="5"
         app:showAsAction="never"/>
 
 

@@ -2,6 +2,7 @@ package com.example.admin.myapplication.Activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -21,9 +22,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.admin.myapplication.Adapters.MovieAdapter;
-import com.example.admin.myapplication.ConstantValues;
+import com.example.admin.myapplication.ConstantValues.ConstantValues;
+import com.example.admin.myapplication.Database.MovieDbConstant;
+import com.example.admin.myapplication.Interfaces.RecyclerItemClickListener;
+import com.example.admin.myapplication.JSONUtilities.MovieDetailsJSONParser;
 import com.example.admin.myapplication.Model.Movie;
 import com.example.admin.myapplication.R;
+import com.example.admin.myapplication.Settings.SettingsActivity;
 import com.example.admin.myapplication.Utils.NetworkHelper;
 
 import org.json.JSONException;
@@ -32,11 +37,34 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, MovieAdapter.RecyclerItemClickListener{
+//TODO UDACITY:
+// /*
+//  czy lepiej pobierać w Main Activity tylko id i obrazek a w details całą reszte( jeśli klikniemy) czy od razu całe obiekty juz w MainActivity
+//
+//
+//
+// */
+
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, RecyclerItemClickListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    public static final String[] MOVIE_DATABASE_COLUMNS = {
+            MovieDbConstant.MovieEntries.COLUMN_TITLE,
+            MovieDbConstant.MovieEntries.COLUMN_RELEASE_DATE,
+            MovieDbConstant.MovieEntries.COLUMN_VOTE_AVARAGE,
+            MovieDbConstant.MovieEntries.COLUMN_PLOT_SYNOPSIS,
+            MovieDbConstant.MovieEntries.COLUMN_IMAGE_LINK,
+            MovieDbConstant.MovieEntries.COLUMN_ID_FROM_NET
+    };
+    public static final int INDEX_COLUMN_TITLE = 0;
+    public static final int INDEX_COLUMN_RELEASE_DATE = 1;
+    public static final int INDEX_COLUMN_VOTE_AVARAGE = 2;
+    public static final int INDEX_COLUMN_PLOT_SYNOPSIS = 3;
+    public static final int INDEX_COLUMN_IMAGE_LINK = 4;
+    public static final int INDEX_COLUMN_ID_FROM_NET = 5;
 
     private List<Movie> listOfMovies = null;
 
@@ -53,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private static final String TOP_RATED = "TOP_RATED";
     private static final String MOST_POPULAR = "MOST_POPULAR";
+    private static final String FAVOURITE = "FAVOURITE";
 
     private String SELECTED_TYPE = null;
 
@@ -96,9 +125,58 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    private void sortByFavourite() {
+        recyclerView.setVisibility(View.VISIBLE);
+        errorLayout.setVisibility(View.INVISIBLE);
+
+        SELECTED_TYPE = FAVOURITE;
+        setActionBarTitle();
+
+        Cursor cursor = getContentResolver().query(MovieDbConstant.MovieEntries.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+        if(cursor.getCount() != 0){
+            Log.i(TAG, "sortByFavourite: są favourity");
+            populateRecycler(cursor);
+        }
+        else if(cursor.getCount() == 0)
+            Log.i(TAG, "sortByFavourite: nie ma favouritow");
+        else
+            Log.i(TAG, "sortByFavourite: lol xD");
+
+        //TODO show movies from content provider with LoaderManager;
+    }
+
+    private void populateRecycler(Cursor cursor) {
+        cursor.moveToFirst();
+
+        listOfMovies = new ArrayList<>();
+
+        do {
+            Movie movie;
+
+            String title = cursor.getString(cursor.getColumnIndex(MOVIE_DATABASE_COLUMNS[INDEX_COLUMN_TITLE]));
+            String voteAvarage = cursor.getString(cursor.getColumnIndex(MOVIE_DATABASE_COLUMNS[INDEX_COLUMN_VOTE_AVARAGE]));
+            String release = cursor.getString(cursor.getColumnIndex(MOVIE_DATABASE_COLUMNS[INDEX_COLUMN_RELEASE_DATE]));
+            String plotSynopsis = cursor.getString(cursor.getColumnIndex(MOVIE_DATABASE_COLUMNS[INDEX_COLUMN_PLOT_SYNOPSIS]));
+            String idFromNet = cursor.getString(cursor.getColumnIndex(MOVIE_DATABASE_COLUMNS[INDEX_COLUMN_ID_FROM_NET]));
+            String imageLink = cursor.getString(cursor.getColumnIndex(MOVIE_DATABASE_COLUMNS[INDEX_COLUMN_IMAGE_LINK]));
+
+            movie = new Movie(idFromNet, title, release, imageLink, voteAvarage, plotSynopsis);
+            listOfMovies.add(movie);
+
+        } while (cursor.moveToNext());
+
+        Log.i(TAG, "populateRecycler: list to string " + listOfMovies.toString());
+
+        movieAdapter = new MovieAdapter(getApplicationContext(), listOfMovies, MainActivity.this);
+        recyclerView.setAdapter(movieAdapter);
+    }
 
     private void setupRecyclerView(RecyclerView recyclerView) {
-        gridLayoutManager = new GridLayoutManager(MainActivity.this, 3);
+        gridLayoutManager = new GridLayoutManager(MainActivity.this, 5);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(gridLayoutManager);
@@ -120,9 +198,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.sort_by_popular:
                 sortByPopular();
                 return true;
+
             case R.id.sort_by_top_rated:
                 sortByTopRated();
                 return true;
+
+            case R.id.sort_by_favourite:
+                sortByFavourite();
+                return true;
+
             case R.id.reload_data:
                 switch (SELECTED_TYPE){
                     case TOP_RATED:
@@ -131,13 +215,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     case MOST_POPULAR:
                         sortByPopular();
                         break;
+                    case FAVOURITE:
+                        sortByFavourite();
+                        break;
                     default:
                         Log.e(TAG, "onOptionsItemSelected: ERROR");
                 }
+                break;
+
+            case R.id.menu_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+
 
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 
     @Override
     public void onClick(View v) {
@@ -148,19 +243,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onListItemClick(int clickedItemPosition) {
 
+        String idFromMovieDB = listOfMovies.get(clickedItemPosition).getIdFromDBMovie();
+        //TODO check if it pass appopriate ID FROM NET
         Intent intentMovieDetails = new Intent(MainActivity.this, MovieDetails.class);
-
-        String movieTitle = listOfMovies.get(clickedItemPosition).getTitle();
-        String movieReleaseDate = listOfMovies.get(clickedItemPosition).getReleaseDate();
-        String moviePoster = listOfMovies.get(clickedItemPosition).getMoviePoster();
-        String movieVoteAvarage = listOfMovies.get(clickedItemPosition).getVoteAvarage();
-        String movieDetails = listOfMovies.get(clickedItemPosition).getDetails();
-
-        intentMovieDetails.putExtra(ConstantValues.MOVIE_TITLE, movieTitle);
-        intentMovieDetails.putExtra(ConstantValues.MOVIE_RELEASE_DATE, movieReleaseDate);
-        intentMovieDetails.putExtra(ConstantValues.MOVIE_POSTERS, moviePoster);
-        intentMovieDetails.putExtra(ConstantValues.MOVIE_VOTE_AVARAGE, movieVoteAvarage);
-        intentMovieDetails.putExtra(ConstantValues.MOVIE_DETAILS, movieDetails);
+        intentMovieDetails.putExtra(ConstantValues.MOVIE_ID_FROM_NET, idFromMovieDB);
 
         startActivity(intentMovieDetails);
 
@@ -203,6 +289,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 title = getResources().getString(R.string.actionbar_title_most_popular);
                 actionBar.setTitle(title);
                 break;
+            case FAVOURITE:
+                title = getResources().getString(R.string.sort_by_favourite);
+                actionBar.setTitle(title);
             default:
                 Log.e(TAG, "setActionBarTitle: ERROR");
         }
@@ -216,7 +305,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    private class MovieQueryTask extends AsyncTask<String, Void, List<Movie>> {
+//TODO UDACITY jak oddzielic to od oddzielnej klasy jeśli w tej klasie \/ używamy metod z klasy MainActivity
+    public class MovieQueryTask extends AsyncTask<String, Void, List<Movie>> {
 
         @Override
         protected void onPreExecute() {
@@ -229,33 +319,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 errorLayout.setVisibility(View.INVISIBLE);
                 recyclerView.setVisibility(View.INVISIBLE);
             } else {
+                //TODO LOAD FROM DATABASE WHEN NETWORK IS NOT AVAILABLE
                 //TODO is this appropriate to use Strings from reources in code, not in xml like line below?
+                /*Yes, it is appropriate to use. In fact, it is a recommended practice, particularly if you want to localize the strings (i.e support different languages).
+                Some helpful references on this:
+                https://medium.com/google-developer-experts/android-strings-xml-things-to-remember-c155025bb8bb
+                https://developer.android.com/guide/topics/resources/localization.html*/
                 showErrorLayout(getResources().getString(R.string.error_message_no_connection));
                 cancel(true);//abort
             }
 
-        }
-
-        @Override
-        protected void onPostExecute(List<Movie> s) {
-
-            progressBar.setVisibility(View.INVISIBLE);
-
-            if (s == null) {
-                showErrorLayout(getResources().getString(R.string.error_message_list_is_null));
-            } else {
-
-                setActionBarTitle();
-                recyclerView.setVisibility(View.VISIBLE);
-
-                movieAdapter = new MovieAdapter(getApplicationContext(), s, MainActivity.this);
-                recyclerView.setAdapter(movieAdapter);
-            }
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            super.onProgressUpdate(values);
         }
 
         @Override
@@ -264,7 +337,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (params.length != 0 && !params[0].equals("") && params[0].length() != 0) {
 
                 String urlType = params[0];
-                String resultString = null;
+                String resultString;
                 listOfMovies = new ArrayList<>();
                 URL url = null;
                 Uri uri;
@@ -272,13 +345,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 switch (urlType) {
                     case MOST_POPULAR:
 
-                        uri = NetworkHelper.mostPopular();
+                        uri = NetworkHelper.getUriMostPopular();
                         url = NetworkHelper.buildURL(uri);
 
                         try {
                             resultString = NetworkHelper.getJsonDataFromResponse(url);
-//                            TODO should I check in this place if resultString is not null? then go to next line
-                            listOfMovies = NetworkHelper.convertJSONIntoList(resultString);
+                            listOfMovies = MovieDetailsJSONParser.convertJSONIntoMovieList(resultString);
                         } catch (IOException e) {
                             e.printStackTrace();
                         } catch (JSONException e) {
@@ -289,13 +361,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     case TOP_RATED:
 
-                        uri = NetworkHelper.topRated();
+                        uri = NetworkHelper.getUriTopRated();
                         url = NetworkHelper.buildURL(uri);
 
                         try {
                             resultString = NetworkHelper.getJsonDataFromResponse(url);
-//                            TODO should I check in this place if resultString is not null? then go to next line
-                            listOfMovies = NetworkHelper.convertJSONIntoList(resultString);
+                            listOfMovies = MovieDetailsJSONParser.convertJSONIntoMovieList(resultString);
                         } catch (IOException e) {
                             e.printStackTrace();
                         } catch (JSONException e) {
@@ -313,38 +384,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return null;
         }
 
+        @Override
+        protected void onPostExecute(List<Movie> s) {
+
+            progressBar.setVisibility(View.INVISIBLE);
+
+            if (s == null) {
+                showErrorLayout(getResources().getString(R.string.error_message_list_is_null));
+            } else {
+                setActionBarTitle();
+                recyclerView.setVisibility(View.VISIBLE);
+
+                movieAdapter = new MovieAdapter(getApplicationContext(), s, MainActivity.this);
+                recyclerView.setAdapter(movieAdapter);
+            }
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
+
     }
-
-
-//    TODO should I use these methods:
-//    recyclerView.setVisibility(View.INVISIBLE);
-//    progressBar.setVisibility(View.INVISIBLE);
-//    errorLayout.setVisibility(View.VISIBLE);
-
-    //TODO or these:  ?
-//    private void setRecyclerViewVisible(RecyclerView recyclerview){
-//        recyclerview.setVisibility(View.VISIBLE);
-//    }
-//
-//    private void setRecyclerViewInvisible(RecyclerView recyclerview){
-//        recyclerview.setVisibility(View.INVISIBLE);
-//    }
-//
-//    private void setProgressBarVisible(ProgressBar progressbar){
-//        progressbar.setVisibility(View.VISIBLE);
-//    }
-//
-//    private void setProgressBarInvisible(ProgressBar progressbar){
-//        progressbar.setVisibility(View.INVISIBLE);
-//    }
-//
-//    private void setErrorLayoutVisible(LinearLayout linearlayout){
-//        linearlayout.setVisibility(View.VISIBLE);
-//    }
-//
-//    private void setErrorLayoutInvisible(LinearLayout linearlayout){
-//        linearlayout.setVisibility(View.INVISIBLE);
-//    }
-//
 
 }

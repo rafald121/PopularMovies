@@ -22,6 +22,7 @@ import java.util.List;
 /**
  * Created by admin on 01.04.2017.
  */
+//http://api.themoviedb.org/3/movie/321612/reviews?api_key=6e339219779d415f85a8fb48b3a9a07b
 
 public class NetworkHelper {
     private static final String TAG = NetworkHelper.class.getSimpleName();
@@ -31,21 +32,65 @@ public class NetworkHelper {
 
     private static final String URL_TOP_RATED = "top_rated";
     private static final String URL_MOST_POPULAR = "popular";
+    private static final String URL_REVIEWS = "reviews";
+    private static final String URL_VIDEOS = "videos";
+
 
     private static final String URL_KEY = "?api_key=6e339219779d415f85a8fb48b3a9a07b";
 
-    public static Uri mostPopular(){
+    public static Uri getUriMostPopular(){
         return Uri.parse(URL_BASE).buildUpon()
                 .appendEncodedPath(URL_MOST_POPULAR)
                 .appendEncodedPath(URL_KEY)
                 .build();
     }
 
-    public static Uri topRated(){
+    public static Uri getUriTopRated(){
         return Uri.parse(URL_BASE).buildUpon()
                 .appendEncodedPath(URL_TOP_RATED)
                 .appendEncodedPath(URL_KEY)
                 .build();
+    }
+
+    public static Uri getUriMovieDetail(String id){
+
+        String uriString = Uri.parse(URL_BASE).buildUpon()
+                .appendEncodedPath(id)
+                .build().toString();
+
+        uriString = uriString + URL_KEY;
+
+        return Uri.parse(uriString);
+    }
+
+    public static Uri getUriMovieReviews(String id) {
+
+        String uriString = Uri.parse(URL_BASE).buildUpon()
+                .appendEncodedPath(id)
+                .appendEncodedPath(URL_REVIEWS)
+                .build().toString();
+
+        uriString += URL_KEY;
+
+        return Uri.parse(uriString);
+
+    }
+
+    public static Uri getUriMovieVideos(String id){
+        String uriString = Uri.parse(URL_BASE).buildUpon()
+                .appendEncodedPath(id)
+                .appendEncodedPath(URL_VIDEOS)
+                .build().toString();
+
+        uriString += URL_KEY;
+
+        return Uri.parse(uriString);
+
+    }
+
+    public static Uri getUriMovieImage(String imageId){
+        return Uri.parse(URL_PICTURE_BASE).buildUpon()
+                .appendEncodedPath(imageId).build();
     }
 
     public static URL buildURL(Uri uri){
@@ -112,49 +157,6 @@ public class NetworkHelper {
                 }
             }
         }
-
-    }
-
-    public static List<Movie> convertJSONIntoList(String jsonString) throws JSONException {
-
-        if(jsonString == null)
-            return null;
-        if( jsonString.equals("") && jsonString.length()==0)
-            return null;
-
-        final String JSON_RESULT = "results";
-        final String JSON_ORIGINAL_TITLE = "original_title";
-        final String JSON_RELEASE_DATE = "release_date";
-        final String JSON_DETAILS = "overview";
-        final String JSON_POPULARITY = "popularity";
-        final String JSON_VOTE_AVARAGE = "vote_average";
-        final String JSON_POSTER_PATH = "poster_path";
-
-        List<Movie> listOfMovies = new ArrayList<>();
-
-        JSONObject root = new JSONObject(jsonString);
-        JSONArray moviesJSONArray = root.getJSONArray(JSON_RESULT);
-
-        String title,releaseDate, details, popularity, posterPath, voteAvarage;
-
-        for( int i = 0 ; i < moviesJSONArray.length(); i++){
-
-            JSONObject movieJSON = moviesJSONArray.getJSONObject(i);
-
-            title = movieJSON.getString(JSON_ORIGINAL_TITLE);
-            releaseDate = movieJSON.getString(JSON_RELEASE_DATE);
-            details = movieJSON.getString(JSON_DETAILS);
-            popularity = movieJSON.getString(JSON_POPULARITY);
-            posterPath = movieJSON.getString(JSON_POSTER_PATH);
-            voteAvarage = movieJSON.getString(JSON_VOTE_AVARAGE);
-
-            Movie movie = new Movie(title, releaseDate, posterPath, voteAvarage, popularity, details);
-
-            listOfMovies.add(movie);
-
-        }
-
-        return listOfMovies;
 
     }
 }
