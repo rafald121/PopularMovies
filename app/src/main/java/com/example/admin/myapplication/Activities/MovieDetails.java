@@ -2,6 +2,8 @@ package com.example.admin.myapplication.Activities;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBar;
@@ -21,7 +23,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.admin.myapplication.Adapters.MovieReviewAdapter;
 import com.example.admin.myapplication.ConstantValues.ConstantValues;
 import com.example.admin.myapplication.Database.MovieDbConstant;
-import com.example.admin.myapplication.Interfaces.AddIdToItemListener;
 import com.example.admin.myapplication.Interfaces.MovieReviewClickListener;
 import com.example.admin.myapplication.JSONUtilities.MovieDetailsJSONParser;
 import com.example.admin.myapplication.JSONUtilities.MovieReviewsJSONParser;
@@ -55,7 +56,7 @@ public class MovieDetails extends AppCompatActivity implements MovieReviewClickL
     @BindView(R.id.recyclerview_review) RecyclerView recyclerViewReviews;
 
     private MovieReviewAdapter movieReviewAdapter;
-
+    private Movie movieObj;
     private MenuItem menuItemFavourite;
 
     private ActionBar actionBar = null;
@@ -63,7 +64,6 @@ public class MovieDetails extends AppCompatActivity implements MovieReviewClickL
     private Intent intentMovieDetails;
 
     private String movieIdFromNet;
-    private int movieId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,17 +75,12 @@ public class MovieDetails extends AppCompatActivity implements MovieReviewClickL
 
         ButterKnife.bind(this);
 
-
-
-        Log.i(TAG, "onCreate: movieId: " + movieId);
-
         intentMovieDetails = getIntent();
         if(intentMovieDetails.hasExtra(ConstantValues.MOVIE_ID_FROM_NET)) {
             movieIdFromNet = intentMovieDetails.getStringExtra(ConstantValues.MOVIE_ID_FROM_NET);
         } else {
             //TODO zrob komunikat jesli nie pobierze ID
         }
-
         new AsyncTaskMovieDetail().execute(movieIdFromNet);
         new AsyncTaskMovieReviews().execute(movieIdFromNet);
 //        new AsyncTaskMovieVideos().execute(movieIdFromNet);
@@ -97,12 +92,22 @@ public class MovieDetails extends AppCompatActivity implements MovieReviewClickL
 
         menuItemFavourite = menu.findItem(R.id.select_favourite);
 
+        long id = isFavourite(movieIdFromNet);
+        if(id != 0)
+            menuItemFavourite.setIcon(R.drawable.ic_favorite_black_24dp);
+        else if(id==0)
+            menuItemFavourite.setIcon(R.drawable.ic_favorite_border_black_24dp);
+
         menuItemFavourite.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+
             @Override
             public boolean onMenuItemClick(MenuItem item) {
 
-                if(isFavourite(movieIdFromNet)){
-                    deleteFromDatabase(movieIdFromNet);
+                long id = isFavourite(movieIdFromNet);
+
+                if( id != 0 ){
+                    deleteFromDatabase(id);
+                    Toast.makeText(MovieDetails.this, "Movie has been remove from favourite!", Toast.LENGTH_SHORT).show();
                     item.setIcon(R.drawable.ic_favorite_border_black_24dp);
                 } else {
 
@@ -122,7 +127,17 @@ public class MovieDetails extends AppCompatActivity implements MovieReviewClickL
         return true;
     }
 
-    private boolean deleteFromDatabase(String movieIdFromNet) {
+    private boolean deleteFromDatabase(long id) {
+
+        String sId = Long.toString(id);
+
+        Uri uri = MovieDbConstant.MovieEntries.CONTENT_URI;
+        uri = uri.buildUpon().appendPath(sId).build();
+
+        getContentResolver().delete(uri, null, null);
+
+//todo add loader
+//        getSupportLoaderManager().restartLoader(TASK_LOADER_ID, null, MovieDetails.this )
 
         return false;
     }
@@ -135,15 +150,11 @@ public class MovieDetails extends AppCompatActivity implements MovieReviewClickL
         contentValues.put(MovieDbConstant.MovieEntries.COLUMN_RELEASE_DATE, textViewReleaseDate.getText().toString());
         contentValues.put(MovieDbConstant.MovieEntries.COLUMN_VOTE_AVARAGE, textViewVoteAvarage.getText().toString());
         contentValues.put(MovieDbConstant.MovieEntries.COLUMN_PLOT_SYNOPSIS, textViewDetails.getText().toString());
+        contentValues.put(MovieDbConstant.MovieEntries.COLUMN_IMAGE_LINK, movieObj.getMoviePoster());
 
         Uri uri = getContentResolver().insert(MovieDbConstant.MovieEntries.CONTENT_URI, contentValues);
 
         if (uri != null) {
-            Log.i(TAG, "addToDatabase: added to Database: " + uri.toString());
-
-            movieId = Integer.parseInt(uri.getLastPathSegment().toString());
-
-            Log.i(TAG, "addToDatabase: movieId: " + movieId);
             return true;
         }
         else {
@@ -152,25 +163,34 @@ public class MovieDetails extends AppCompatActivity implements MovieReviewClickL
 
     }
 
+    private long isFavourite(String movieIdFromNet) {
 
+        Cursor cursor;
+
+        cursor = getContentResolver().query(MovieDbConstant.MovieEntries.CONTENT_URI,
+                null,
+                MovieDbConstant.MovieEntries.COLUMN_ID_FROM_NET + "=" + movieIdFromNet,
+                null,
+                null);
+
+
+        if(cursor.getCount() == 0){ // nie jest favourite
+            return 0;
+        }
+        else { // jest favourite
+            cursor.moveToFirst();
+            long id = cursor.getLong(cursor.getColumnIndex(MovieDbConstant.MovieEntries.COLUMN_ID));
+            return id;
+        }
+
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.select_favourite){
-
-            Toast.makeText(this, "favourite", Toast.LENGTH_SHORT).show();
-
-        }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private boolean isFavourite(String movieId) {
-        //todo check in database
-//        if()
-        return false;
-
-    }
 
     private void bind(Movie movie) {
 
@@ -216,8 +236,6 @@ public class MovieDetails extends AppCompatActivity implements MovieReviewClickL
 
     public class AsyncTaskMovieDetail extends AsyncTask<String, Void, Movie>{
 
-        private final String TAG_AT_MovieDetails = AsyncTaskMovieDetail.class.getSimpleName();
-
         @Override
         protected void onPreExecute() {
             //TODO DODAC LOADERA jakeis koleczko
@@ -228,7 +246,7 @@ public class MovieDetails extends AppCompatActivity implements MovieReviewClickL
         protected Movie doInBackground(String... params) {
 
             if(!validateParams(params)){
-//TODO ZRob cos
+                //TODO ZRob cos
                 return null;
 
             }
@@ -255,7 +273,9 @@ public class MovieDetails extends AppCompatActivity implements MovieReviewClickL
         protected void onPostExecute(Movie movie) {
             if(movie == null){
                 Log.i(TAG, "onPostExecute: movie is null");
+                return;
             }
+            movieObj = movie;
             bind(movie);
             setActionBarTitle(movie.getTitle());
         }
