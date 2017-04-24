@@ -2,7 +2,6 @@ package com.example.admin.myapplication.Adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +9,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.admin.myapplication.Interfaces.RecyclerItemClickListener;
 import com.example.admin.myapplication.Model.Movie;
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.Utils.NetworkHelper;
@@ -21,17 +21,13 @@ import java.util.List;
  * Created by admin on 01.04.2017.
  */
 
-public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
+public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolderMovie>{
 
-    private static final String TAG = MovieAdapter.ViewHolder.class.getSimpleName();
+    private static final String TAG = ViewHolderMovie.class.getSimpleName();
     private List<Movie> movieList;
     private Context context;
 
     final private RecyclerItemClickListener mOnClickListener;
-
-    public interface RecyclerItemClickListener{
-        void onListItemClick(int cickedItemIndex);
-    }
 
     public MovieAdapter(Context context, List<Movie> movieList, RecyclerItemClickListener listener) {
         this.movieList = movieList;
@@ -40,17 +36,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolderMovie onCreateViewHolder(ViewGroup parent, int viewType) {
 
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.movie_item, parent, false);
-        ViewHolder movieViewHolder = new ViewHolder(view);
+        View view = inflater.inflate(R.layout.item_movie, parent, false);
+        ViewHolderMovie movieViewHolderMovie = new ViewHolderMovie(view);
 
-        return movieViewHolder;
+        return movieViewHolderMovie;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolderMovie holder, int position) {
         holder.bind(position);
     }
 
@@ -59,11 +55,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
         return movieList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener{
+
+    //todo try to move it \/ to single class
+    public class ViewHolderMovie extends RecyclerView.ViewHolder  implements View.OnClickListener{
 
         private ImageView thumbnail;
 
-        public ViewHolder(View itemView) {
+        public ViewHolderMovie(View itemView) {
 
             super(itemView);
             thumbnail = (ImageView) itemView.findViewById(R.id.movie_item_image);
