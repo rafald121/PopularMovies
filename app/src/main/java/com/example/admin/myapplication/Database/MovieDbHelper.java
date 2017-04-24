@@ -13,7 +13,7 @@ import com.example.admin.myapplication.Database.MovieDbConstant.MovieEntries;
 public class MovieDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "movieDatabase";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
 
     public MovieDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -25,10 +25,11 @@ public class MovieDbHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_MOVIE_TABLE = "CREATE TABLE " + MovieEntries.TABLE_NAME + " (" +
 
                 MovieEntries.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                MovieEntries.COLUMN_TITLE + " TEXT, " +
+                MovieEntries.COLUMN_ID_FROM_NET + " TEXT, " +
+                MovieEntries.COLUMN_TITLE + " TEXT NOT NULL, " +
                 MovieEntries.COLUMN_RELEASE_DATE + " TEXT, " +
                 MovieEntries.COLUMN_VOTE_AVARAGE + " REAL NOT NULL, " +
-                MovieEntries.COLUMN_PLOT_SYNOPSIS + " TEXT, " + ")";
+                MovieEntries.COLUMN_PLOT_SYNOPSIS + " TEXT " + ");";
 
         db.execSQL(SQL_CREATE_MOVIE_TABLE);
 

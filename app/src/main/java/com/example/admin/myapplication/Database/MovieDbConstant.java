@@ -22,6 +22,7 @@ public class MovieDbConstant {
         public static final String TABLE_NAME = "movies";
 
         public static final String COLUMN_ID = "id";
+        public static final String COLUMN_ID_FROM_NET = "idFromNet";
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_RELEASE_DATE = "releaseDate";
         public static final String COLUMN_VOTE_AVARAGE = "voteAvarage";

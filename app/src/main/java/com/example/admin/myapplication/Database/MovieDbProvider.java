@@ -99,14 +99,24 @@ public class MovieDbProvider extends ContentProvider {
             case CODE_MOVIE:
 
                 Log.i(TAG, "insert: CODE MOVIE");
+                long id1 = db.insert(TABLE_NAME, null, values);
+
+                if(id1>0){
+                    insertedUri = ContentUris.withAppendedId(MovieDbConstant.MovieEntries.CONTENT_URI, id1);
+                } else {
+                    throw new android.database.SQLException("Failed to insert row into: " + uri);
+                }
+
                 break;
 
             case CODE_MOVIE_SINGLE:{
 
-                long id = db.insert(TABLE_NAME, null, values);
+                Log.i(TAG, "insert: CODE_MOVIE_SINGLE");
 
-                if(id>0){
-                    insertedUri = ContentUris.withAppendedId(MovieDbConstant.MovieEntries.CONTENT_URI, id);
+                long id2 = db.insert(TABLE_NAME, null, values);
+
+                if(id2>0){
+                    insertedUri = ContentUris.withAppendedId(MovieDbConstant.MovieEntries.CONTENT_URI, id2);
                 } else {
                     throw new android.database.SQLException("Failed to insert row into: " + uri);
                 }
