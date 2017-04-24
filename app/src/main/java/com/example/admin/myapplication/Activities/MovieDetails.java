@@ -63,7 +63,9 @@ public class MovieDetails extends AppCompatActivity implements MovieReviewClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_details);
+
         actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         ButterKnife.bind(this);
 
@@ -89,15 +91,17 @@ public class MovieDetails extends AppCompatActivity implements MovieReviewClickL
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.select_favourite){
+
+            Toast.makeText(this, "favourite", Toast.LENGTH_SHORT).show();
+
             if(isFavourite(movieId)){
                 setFavouriteImage(false);
             } else{
                 setFavouriteImage(true);
             }
         }
-            Toast.makeText(this, "hao", Toast.LENGTH_SHORT).show();
 
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 
     private void setFavouriteImage(boolean isFavourite){
