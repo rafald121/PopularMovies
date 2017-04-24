@@ -67,9 +67,7 @@ public class MovieDbProvider extends ContentProvider {
 
             case CODE_MOVIE_SINGLE:{
                 String id = uri.getLastPathSegment();
-                //TODO check what it return /\
-
-                //TODO dokonczyc ;)
+                Log.i(TAG, "query: error");
             }
 
             default:
@@ -98,7 +96,6 @@ public class MovieDbProvider extends ContentProvider {
         switch (match){
             case CODE_MOVIE:
 
-                Log.i(TAG, "insert: CODE MOVIE");
                 long id1 = db.insert(TABLE_NAME, null, values);
 
                 if(id1>0){
@@ -110,8 +107,6 @@ public class MovieDbProvider extends ContentProvider {
                 break;
 
             case CODE_MOVIE_SINGLE:{
-
-                Log.i(TAG, "insert: CODE_MOVIE_SINGLE");
 
                 long id2 = db.insert(TABLE_NAME, null, values);
 
@@ -144,11 +139,11 @@ public class MovieDbProvider extends ContentProvider {
 
         switch (match){
             case CODE_MOVIE_SINGLE:
-                //TODO check getPathSegments to string \/
+
                 String id = uri.getPathSegments().get(1);
 
-                // TODO: check if delete with id like this \/ work
-                deletedTaskId = db.delete(TABLE_NAME, "_id=?", new String[]{id});
+                deletedTaskId = db.delete(TABLE_NAME, "id=?", new String[]{id});
+
                 break;
             case CODE_MOVIE:
                 Log.i(TAG, "delete: CODE MOVIE ");
@@ -158,8 +153,11 @@ public class MovieDbProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Uknown uri: " + uri);
         }
 
-        if(deletedTaskId != 0)
+        if(deletedTaskId != 0){
             getContext().getContentResolver().notifyChange(uri, null);
+        } else{
+            Log.i(TAG, "delete: error while deleting");
+        }
 
         return deletedTaskId;
 
