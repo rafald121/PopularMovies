@@ -2,6 +2,7 @@ package com.example.admin.myapplication.Activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 
 import com.example.admin.myapplication.Adapters.MovieAdapter;
 import com.example.admin.myapplication.ConstantValues.ConstantValues;
+import com.example.admin.myapplication.Database.MovieDbConstant;
 import com.example.admin.myapplication.Interfaces.RecyclerItemClickListener;
 import com.example.admin.myapplication.JSONUtilities.MovieDetailsJSONParser;
 import com.example.admin.myapplication.Model.Movie;
@@ -49,6 +51,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    public static final String[] MOVIE_DATABASE_COLUMNS = {
+            MovieDbConstant.MovieEntries.COLUMN_TITLE,
+            MovieDbConstant.MovieEntries.COLUMN_RELEASE_DATE,
+            MovieDbConstant.MovieEntries.COLUMN_VOTE_AVARAGE,
+            MovieDbConstant.MovieEntries.COLUMN_PLOT_SYNOPSIS,
+            MovieDbConstant.MovieEntries.COLUMN_IMAGE_LINK,
+            MovieDbConstant.MovieEntries.COLUMN_ID_FROM_NET
+    };
+    public static final int INDEX_COLUMN_TITLE = 0;
+    public static final int INDEX_COLUMN_RELEASE_DATE = 1;
+    public static final int INDEX_COLUMN_VOTE_AVARAGE = 2;
+    public static final int INDEX_COLUMN_PLOT_SYNOPSIS = 3;
+    public static final int INDEX_COLUMN_IMAGE_LINK = 4;
+    public static final int INDEX_COLUMN_ID_FROM_NET = 5;
+
     private List<Movie> listOfMovies = null;
 
     private RecyclerView recyclerView = null;
@@ -64,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private static final String TOP_RATED = "TOP_RATED";
     private static final String MOST_POPULAR = "MOST_POPULAR";
+    private static final String FAVOURITE = "FAVOURITE";
 
     private String SELECTED_TYPE = null;
 
@@ -108,7 +126,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void sortByFavourite() {
+        recyclerView.setVisibility(View.VISIBLE);
+        errorLayout.setVisibility(View.INVISIBLE);
+
+        SELECTED_TYPE = FAVOURITE;
+        setActionBarTitle();
+
+        Cursor cursor = getContentResolver().query(MovieDbConstant.MovieEntries.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+        if(cursor.getCount() != 0){
+            Log.i(TAG, "sortByFavourite: są favourity");
+            populateRecycler(cursor);
+        }
+        else if(cursor.getCount() == 0)
+            Log.i(TAG, "sortByFavourite: nie ma favouritow");
+        else
+            Log.i(TAG, "sortByFavourite: lol xD");
+
         //TODO show movies from content provider with LoaderManager;
+    }
+
+    private void populateRecycler(Cursor cursor) {
+        cursor.moveToFirst();
+
+        listOfMovies = new ArrayList<>();
+
+        do {
+            Movie movie;
+
+            String title = cursor.getString(cursor.getColumnIndex(MOVIE_DATABASE_COLUMNS[INDEX_COLUMN_TITLE]));
+            String voteAvarage = cursor.getString(cursor.getColumnIndex(MOVIE_DATABASE_COLUMNS[INDEX_COLUMN_VOTE_AVARAGE]));
+            String release = cursor.getString(cursor.getColumnIndex(MOVIE_DATABASE_COLUMNS[INDEX_COLUMN_RELEASE_DATE]));
+            String plotSynopsis = cursor.getString(cursor.getColumnIndex(MOVIE_DATABASE_COLUMNS[INDEX_COLUMN_PLOT_SYNOPSIS]));
+            String idFromNet = cursor.getString(cursor.getColumnIndex(MOVIE_DATABASE_COLUMNS[INDEX_COLUMN_ID_FROM_NET]));
+            String imageLink = cursor.getString(cursor.getColumnIndex(MOVIE_DATABASE_COLUMNS[INDEX_COLUMN_IMAGE_LINK]));
+
+            movie = new Movie(idFromNet, title, release, imageLink, voteAvarage, plotSynopsis);
+            listOfMovies.add(movie);
+
+        } while (cursor.moveToNext());
+
+        Log.i(TAG, "populateRecycler: list to string " + listOfMovies.toString());
+
+        movieAdapter = new MovieAdapter(getApplicationContext(), listOfMovies, MainActivity.this);
+        recyclerView.setAdapter(movieAdapter);
     }
 
     private void setupRecyclerView(RecyclerView recyclerView) {
@@ -150,6 +214,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         break;
                     case MOST_POPULAR:
                         sortByPopular();
+                        break;
+                    case FAVOURITE:
+                        sortByFavourite();
                         break;
                     default:
                         Log.e(TAG, "onOptionsItemSelected: ERROR");
@@ -222,6 +289,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 title = getResources().getString(R.string.actionbar_title_most_popular);
                 actionBar.setTitle(title);
                 break;
+            case FAVOURITE:
+                title = getResources().getString(R.string.sort_by_favourite);
+                actionBar.setTitle(title);
             default:
                 Log.e(TAG, "setActionBarTitle: ERROR");
         }
@@ -234,6 +304,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
+
 //TODO UDACITY jak oddzielic to od oddzielnej klasy jeśli w tej klasie \/ używamy metod z klasy MainActivity
     public class MovieQueryTask extends AsyncTask<String, Void, List<Movie>> {
 
@@ -321,7 +392,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (s == null) {
                 showErrorLayout(getResources().getString(R.string.error_message_list_is_null));
             } else {
-
                 setActionBarTitle();
                 recyclerView.setVisibility(View.VISIBLE);
 
