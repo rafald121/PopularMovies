@@ -77,11 +77,20 @@ public class NetworkHelper {
     }
 
     public static Uri getUriMovieVideos(String id){
-        return Uri.parse(URL_BASE).buildUpon()
+        String uriString = Uri.parse(URL_BASE).buildUpon()
                 .appendEncodedPath(id)
                 .appendEncodedPath(URL_VIDEOS)
-                .appendEncodedPath(URL_KEY)
-                .build();
+                .build().toString();
+
+        uriString += URL_KEY;
+
+        return Uri.parse(uriString);
+
+    }
+
+    public static Uri getUriMovieImage(String imageId){
+        return Uri.parse(URL_PICTURE_BASE).buildUpon()
+                .appendEncodedPath(imageId).build();
     }
 
     public static URL buildURL(Uri uri){
