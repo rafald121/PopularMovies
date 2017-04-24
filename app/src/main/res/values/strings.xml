@@ -8,6 +8,8 @@
 <!--ACTION BAR TITLES-->
     <string name="actionbar_title_top_rated">Top rated</string>
     <string name="actionbar_title_most_popular">Most popular</string>
+    <string name="actionbar_title_favourite">Favourite</string>
+
     <string name="actionbar_title_connection_error">Connection Error</string>
 
     <string name="refresh_error">Refresh</string>
