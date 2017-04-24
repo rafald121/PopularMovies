@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.example.admin.myapplication.Adapters.MovieAdapter;
 import com.example.admin.myapplication.ConstantValues.ConstantValues;
+import com.example.admin.myapplication.Interfaces.RecyclerItemClickListener;
 import com.example.admin.myapplication.JSONUtilities.MovieDetailsJSONParser;
 import com.example.admin.myapplication.Model.Movie;
 import com.example.admin.myapplication.R;
@@ -44,7 +45,7 @@ import java.util.List;
 // */
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, MovieAdapter.RecyclerItemClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, RecyclerItemClickListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -105,7 +106,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         new MovieQueryTask().execute(MOST_POPULAR);
 
     }
-
 
     private void sortByFavourite() {
         //TODO show movies from content provider with LoaderManager;
