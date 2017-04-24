@@ -1,5 +1,6 @@
 package com.example.admin.myapplication.Activities;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -19,6 +20,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.admin.myapplication.Adapters.MovieReviewAdapter;
 import com.example.admin.myapplication.ConstantValues.ConstantValues;
+import com.example.admin.myapplication.Database.MovieDbConstant;
+import com.example.admin.myapplication.Interfaces.AddIdToItemListener;
 import com.example.admin.myapplication.Interfaces.MovieReviewClickListener;
 import com.example.admin.myapplication.JSONUtilities.MovieDetailsJSONParser;
 import com.example.admin.myapplication.JSONUtilities.MovieReviewsJSONParser;
@@ -53,11 +56,14 @@ public class MovieDetails extends AppCompatActivity implements MovieReviewClickL
 
     private MovieReviewAdapter movieReviewAdapter;
 
+    private MenuItem menuItemFavourite;
+
     private ActionBar actionBar = null;
 
     private Intent intentMovieDetails;
 
-    private String movieId;
+    private String movieIdFromNet;
+    private int movieId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,24 +75,84 @@ public class MovieDetails extends AppCompatActivity implements MovieReviewClickL
 
         ButterKnife.bind(this);
 
+
+
+        Log.i(TAG, "onCreate: movieId: " + movieId);
+
         intentMovieDetails = getIntent();
         if(intentMovieDetails.hasExtra(ConstantValues.MOVIE_ID_FROM_NET)) {
-            movieId = intentMovieDetails.getStringExtra(ConstantValues.MOVIE_ID_FROM_NET);
+            movieIdFromNet = intentMovieDetails.getStringExtra(ConstantValues.MOVIE_ID_FROM_NET);
         } else {
             //TODO zrob komunikat jesli nie pobierze ID
         }
 
-        new AsyncTaskMovieDetail().execute(movieId);
-        new AsyncTaskMovieReviews().execute(movieId);
-//        new AsyncTaskMovieVideos().execute(movieId);
+        new AsyncTaskMovieDetail().execute(movieIdFromNet);
+        new AsyncTaskMovieReviews().execute(movieIdFromNet);
+//        new AsyncTaskMovieVideos().execute(movieIdFromNet);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.details, menu);
 
+        menuItemFavourite = menu.findItem(R.id.select_favourite);
+
+        menuItemFavourite.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                if(isFavourite(movieIdFromNet)){
+                    deleteFromDatabase(movieIdFromNet);
+                    item.setIcon(R.drawable.ic_favorite_border_black_24dp);
+                } else {
+
+                    if(addToDatabase(movieIdFromNet)) {
+                        item.setIcon(R.drawable.ic_favorite_black_24dp);
+                        Toast.makeText(MovieDetails.this, "Movie has been added to favourite!", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        Toast.makeText(MovieDetails.this, "Failed to add to favourite", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+                return false;
+            }
+        });
+
         return true;
     }
+
+    private boolean deleteFromDatabase(String movieIdFromNet) {
+
+        return false;
+    }
+
+    private boolean addToDatabase(String movieIdFromNet) {
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(MovieDbConstant.MovieEntries.COLUMN_ID_FROM_NET, movieIdFromNet);
+        contentValues.put(MovieDbConstant.MovieEntries.COLUMN_TITLE, textViewTitle.getText().toString());
+        contentValues.put(MovieDbConstant.MovieEntries.COLUMN_RELEASE_DATE, textViewReleaseDate.getText().toString());
+        contentValues.put(MovieDbConstant.MovieEntries.COLUMN_VOTE_AVARAGE, textViewVoteAvarage.getText().toString());
+        contentValues.put(MovieDbConstant.MovieEntries.COLUMN_PLOT_SYNOPSIS, textViewDetails.getText().toString());
+
+        Uri uri = getContentResolver().insert(MovieDbConstant.MovieEntries.CONTENT_URI, contentValues);
+
+        if (uri != null) {
+            Log.i(TAG, "addToDatabase: added to Database: " + uri.toString());
+
+            movieId = Integer.parseInt(uri.getLastPathSegment().toString());
+
+            Log.i(TAG, "addToDatabase: movieId: " + movieId);
+            return true;
+        }
+        else {
+            return false;
+        }
+
+    }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -94,23 +160,16 @@ public class MovieDetails extends AppCompatActivity implements MovieReviewClickL
 
             Toast.makeText(this, "favourite", Toast.LENGTH_SHORT).show();
 
-            if(isFavourite(movieId)){
-                setFavouriteImage(false);
-            } else{
-                setFavouriteImage(true);
-            }
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void setFavouriteImage(boolean isFavourite){
-        //todo change favourite star image
-
-    }
-
     private boolean isFavourite(String movieId) {
+        //todo check in database
+//        if()
         return false;
+
     }
 
     private void bind(Movie movie) {
@@ -325,7 +384,7 @@ public class MovieDetails extends AppCompatActivity implements MovieReviewClickL
 //    public Loader<MovieDetails> onCreateLoader(int id, Bundle args) {
 //        switch (id){
 //            case MOVIE_DETAIL_ID:
-//                Uri uri = NetworkHelper.getUriMovieDetail(movieId);
+//                Uri uri = NetworkHelper.getUriMovieDetail(movieIdFromNet);
 //                URL url = NetworkHelper.buildURL(uri);
 //
 //
