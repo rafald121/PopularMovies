@@ -41,9 +41,6 @@ import java.util.List;
 //TODO UDACITY:
 // /*
 //  czy lepiej pobierać w Main Activity tylko id i obrazek a w details całą reszte( jeśli klikniemy) czy od razu całe obiekty juz w MainActivity
-//
-//
-//
 // */
 
 
@@ -138,13 +135,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 null,
                 null);
         if(cursor.getCount() != 0){
-            Log.i(TAG, "sortByFavourite: są favourity");
             populateRecycler(cursor);
         }
-        else if(cursor.getCount() == 0)
-            Log.i(TAG, "sortByFavourite: nie ma favouritow");
-        else
-            Log.i(TAG, "sortByFavourite: lol xD");
+        else if(cursor.getCount() == 0){
+            Log.i(TAG, "sortByFavourite: error");
+        }
 
         //TODO show movies from content provider with LoaderManager;
     }
@@ -168,8 +163,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             listOfMovies.add(movie);
 
         } while (cursor.moveToNext());
-
-        Log.i(TAG, "populateRecycler: list to string " + listOfMovies.toString());
 
         movieAdapter = new MovieAdapter(getApplicationContext(), listOfMovies, MainActivity.this);
         recyclerView.setAdapter(movieAdapter);
