@@ -237,12 +237,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onListItemClick(int clickedItemPosition) {
 
         String idFromMovieDB = listOfMovies.get(clickedItemPosition).getIdFromDBMovie();
-        //TODO check if it pass appopriate ID FROM NET
+
         Intent intentMovieDetails = new Intent(MainActivity.this, MovieDetails.class);
         intentMovieDetails.putExtra(ConstantValues.MOVIE_ID_FROM_NET, idFromMovieDB);
 
         startActivity(intentMovieDetails);
-
     }
 
     private void refreshData() {

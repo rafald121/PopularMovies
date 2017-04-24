@@ -24,7 +24,6 @@
         <activity android:name=".Activities.MovieDetails"
             android:parentActivityName=".Activities.MainActivity">
 
-            <!--TODO co zmienia \/-->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Activities.MainActivity"/>
