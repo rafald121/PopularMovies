@@ -44,7 +44,7 @@ import java.util.List;
 // */
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, RecyclerItemClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, RecyclerItemClickListener,  {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -62,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final int INDEX_COLUMN_PLOT_SYNOPSIS = 3;
     public static final int INDEX_COLUMN_IMAGE_LINK = 4;
     public static final int INDEX_COLUMN_ID_FROM_NET = 5;
+
+    public static final int ID_MOVIE_LOADER = 41;
 
     private List<Movie> listOfMovies = null;
 

@@ -26,15 +26,12 @@ import static com.bumptech.glide.gifdecoder.GifHeaderParser.TAG;
 
 public class MovieReviewAdapter extends RecyclerView.Adapter<MovieReviewAdapter.ViewHolderMovieReview>{
 
-    private final MovieReviewClickListener movieReviewClickListener;
-
     private List<MovieReview> movieReviewsList;
     private Context context;
 
-    public MovieReviewAdapter(List<MovieReview> movieReviewsList, Context context, MovieReviewClickListener listener) {
+    public MovieReviewAdapter(List<MovieReview> movieReviewsList, Context context) {
         this.movieReviewsList = movieReviewsList;
         this.context = context;
-        this.movieReviewClickListener = listener;
     }
 
     @Override
@@ -89,7 +86,6 @@ public class MovieReviewAdapter extends RecyclerView.Adapter<MovieReviewAdapter.
         @Override
         public void onClick(View v) {
             String tag = (String) itemView.getTag();
-            movieReviewClickListener.movieReviewClickListener(tag);
         }
     }
 }

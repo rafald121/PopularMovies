@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -42,8 +44,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MovieDetails extends AppCompatActivity implements MovieReviewClickListener
-//        implements  LoaderManager.LoaderCallbacks<MovieDetails>
+public class MovieDetails extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>
 {
     private static final String TAG = MovieDetails.class.getSimpleName();
 
@@ -52,8 +53,9 @@ public class MovieDetails extends AppCompatActivity implements MovieReviewClickL
     @BindView(R.id.movie_vote_avarage)  TextView textViewVoteAvarage;
     @BindView(R.id.movie_details)       TextView textViewDetails;
     @BindView(R.id.movie_poster)        ImageView imageViewPoster;
-
     @BindView(R.id.recyclerview_review) RecyclerView recyclerViewReviews;
+
+    public static final int ID_MOVIE_LOADER = 41;
 
     private MovieReviewAdapter movieReviewAdapter;
     private Movie movieObj;
@@ -173,7 +175,6 @@ public class MovieDetails extends AppCompatActivity implements MovieReviewClickL
                 null,
                 null);
 
-
         if(cursor.getCount() == 0){ // nie jest favourite
             return 0;
         }
@@ -187,10 +188,8 @@ public class MovieDetails extends AppCompatActivity implements MovieReviewClickL
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         return super.onOptionsItemSelected(item);
     }
-
 
     private void bind(Movie movie) {
 
@@ -218,7 +217,7 @@ public class MovieDetails extends AppCompatActivity implements MovieReviewClickL
 
 
     private void populateReviewRecyclerView(List<MovieReview> movieReview) {
-        movieReviewAdapter = new MovieReviewAdapter(movieReview, this, this);
+        movieReviewAdapter = new MovieReviewAdapter(movieReview, this);
 
         LinearLayoutManager recyclerManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyclerViewReviews.setLayoutManager(recyclerManager);
@@ -229,10 +228,20 @@ public class MovieDetails extends AppCompatActivity implements MovieReviewClickL
     }
 
     @Override
-    public void movieReviewClickListener(String idFromNet) {
-        Log.i(TAG, "movieReviewClickListener: tag: " + idFromNet);
-        //todo open review from url (id from net)
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return null;
     }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
+
 
     public class AsyncTaskMovieDetail extends AsyncTask<String, Void, Movie>{
 
