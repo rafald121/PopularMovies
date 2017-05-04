@@ -1,5 +1,8 @@
 package com.example.admin.myapplication.Utils;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.util.Log;
 
@@ -127,6 +130,13 @@ public class NetworkHelper {
         return url;
     }
 
+    public static boolean isNetworkAvailable(Context applicationContext) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
     public static String getJsonDataFromResponse(URL url) throws IOException {
 
         if(url == null && url.toString().equals("") && url.toString().length() == 0)
@@ -179,4 +189,6 @@ public class NetworkHelper {
         }
 
     }
+
+
 }
