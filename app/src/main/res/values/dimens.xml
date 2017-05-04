@@ -9,5 +9,9 @@
     <dimen name="movie_details_details_margintop">24dp</dimen>
     <dimen name="movie_details_margin_16">16dp</dimen>
 
+    <dimen name="movie_video_item_margin_8dp">8dp</dimen>
+
+    <dimen name="movie_details_divider_margin">8dp</dimen>
+
 
 </resources>
