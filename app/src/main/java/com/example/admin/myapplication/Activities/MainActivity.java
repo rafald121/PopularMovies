@@ -263,14 +263,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
             if(SELECTED_TYPE.equals(FAVOURITE)){
 
+                String idFromMovieDB = listOfMovies.get(clickedItemPosition).getIdFromDBMovie();
+
                 intentMovieDetails = new Intent(MainActivity.this, MovieDetails.class);
                 intentMovieDetails.putExtra(ConstantValues.IS_CONNECTION_AVAILABLE, false);
-                intentMovieDetails.putExtra(ConstantValues.MOVIE_ID_FROM_CONTENTPROVIDER, clickedItemPosition);
+                intentMovieDetails.putExtra(ConstantValues.MOVIE_ID_FROM_NET, idFromMovieDB);
 
                 startActivity(intentMovieDetails);
 
             } else if(SELECTED_TYPE.equals(TOP_RATED) || SELECTED_TYPE.equals(MOST_POPULAR)){
-                Toast.makeText(this, "You can't see details on not favourite movie", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "You can't see details from not favourite movie", Toast.LENGTH_SHORT).show();
                 return;
             } else {
                 Log.e(TAG, "onListItemClick: bad error");

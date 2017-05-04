@@ -103,15 +103,11 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
 
             } else{
 
-                if(intentMovieDetails.hasExtra(ConstantValues.MOVIE_ID_FROM_CONTENTPROVIDER) == true){
+                if(intentMovieDetails.hasExtra(ConstantValues.MOVIE_ID_FROM_NET) == true){
 
-//                    menuItemFavourite.setIcon(R.drawable.ic_favorite_black_24dp);
-
-                    movieIdFromContentProvider = intentMovieDetails.getIntExtra(ConstantValues.MOVIE_ID_FROM_CONTENTPROVIDER, 0);
-
-//                    getSupportLoaderManager().initLoader(ID_MOVIE_LOADER, null, this);
-
-                    getDetailsFromContentProvider(movieIdFromContentProvider);
+                    movieIdFromNet = intentMovieDetails.getStringExtra(ConstantValues.MOVIE_ID_FROM_NET);
+                    
+                    getDetailsFromContentProvider(movieIdFromNet);
 
                 } else {
                     Log.i(TAG, "onCreate: error tukej2");
@@ -129,24 +125,43 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
 
     }
 
-    private void getDetailsFromContentProvider(int movieIdFromContentProvider) {
+    private void getDetailsFromContentProvider(String movieIdFromNet) {
 
+        long idFromContentProvider = -1;
+        Uri uriToId = MovieDbConstant.MovieEntries.CONTENT_URI;
+
+        Cursor cursor= getContentResolver().query(uriToId,
+                new String[]{MovieDbConstant.MovieEntries.COLUMN_ID}, 
+                MovieDbConstant.MovieEntries.COLUMN_ID_FROM_NET + " = ? ", 
+                new String[]{movieIdFromNet}, 
+                null );
+
+
+        if(cursor.getCount()!=0) {
+            cursor.moveToFirst();
+
+            idFromContentProvider = cursor.getLong(cursor.getColumnIndex(MovieDbConstant.MovieEntries.COLUMN_ID));
+        }     else {
+            Log.e(TAG, "getDetailsFromContentProvider: ERROR");
+        }
         //TODO hide videos and reviews when offline mode
-        String movieId = String.valueOf(movieIdFromContentProvider);
-        Uri uri = Uri.parse(String.valueOf(MovieDbConstant.MovieEntries.CONTENT_URI + "/" + movieId));
-        Log.i(TAG, "getDetailsFromContentProvider: uri; " + uri.toString());
-        Cursor cursor = getContentResolver().query(uri,
+
+        Uri uriToDetails = Uri.parse(String.valueOf(MovieDbConstant.MovieEntries.CONTENT_URI + "/" + idFromContentProvider));
+
+        Cursor cursorWithDetails = getContentResolver().query(uriToDetails,
                 null,
                 null,
                 null,
                 null);
 
-        if(cursor.getCount()!=0) {
-            Log.e(TAG, "getDetailsFromContentProvider: != 0 cursor.getCount == " + cursor.getCount() );
 
-            bind(cursor);
-        } else
-            Log.e(TAG, "getDetailsFromContentProvider: cursor.getCount == " + cursor.getCount() );
+        if(cursorWithDetails.getCount()!=0) {
+            cursor.moveToFirst();
+
+            bind(cursorWithDetails);
+        } else{
+            Log.e(TAG, "getDetailsFromContentProvider: error");
+        }
 
     }
 
@@ -178,6 +193,7 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
 //TODO addToDatabase available only on online mode
 
                     if(addToDatabase(movieIdFromNet)) {
+                        //TODO udacity: how to set new movie id (from content provider) to item with this movie?
                         item.setIcon(R.drawable.ic_favorite_black_24dp);
                         Toast.makeText(MovieDetails.this, "Movie has been added to favourite!", Toast.LENGTH_SHORT).show();
                     }
@@ -222,6 +238,8 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
 
         Log.i(TAG, "deleteFromDatabase: uriAdd: " + uri.toString());
 
+        String lastSegmentFromUri = uri.getLastPathSegment();
+        Log.i(TAG, "addToDatabase: lastSegmentFromUri: " + lastSegmentFromUri.toString());
 
         if (uri != null) {
             return true;
