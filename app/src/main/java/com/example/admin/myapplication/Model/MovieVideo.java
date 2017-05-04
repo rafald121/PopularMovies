@@ -6,18 +6,18 @@ package com.example.admin.myapplication.Model;
 
 public class MovieVideo {
 
-    private String YTname;
+    private String YTtitle;
     private String id;
     private String YTkey;
 
-    public MovieVideo(String id, String YTkey, String YTname) {
-        this.YTname = YTname;
+    public MovieVideo(String id, String YTkey, String YTtitle) {
+        this.YTtitle = YTtitle;
         this.id = id;
         this.YTkey = YTkey;
     }
 
-    public String getYTname() {
-        return YTname;
+    public String getYTtitle() {
+        return YTtitle;
     }
 
     public String getIdFromDBMovie() {
@@ -33,7 +33,7 @@ public class MovieVideo {
         return "MovieVideo{" +
                 "YTkey='" + YTkey + '\'' +
                 ", idFromDBMovie='" + id + '\'' +
-                ", YTname='" + YTname + '\'' +
+                ", YTtitle='" + YTtitle + '\'' +
                 '}';
     }
 }
