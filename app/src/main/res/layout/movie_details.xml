@@ -110,10 +110,13 @@
             android:id="@+id/movie_details_videos_error"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/movie_video_item_margin_8dp"
+            android:layout_marginBottom="@dimen/movie_video_item_margin_8dp"
             android:layout_below="@+id/movie_details_details_linear"
             android:visibility="invisible"
             android:textSize="@dimen/movie_details_error_text_size"
             android:textStyle="bold"
+            android:textAlignment="center"
             />
 
         <include
@@ -131,10 +134,13 @@
             android:id="@+id/movie_details_reviews_error"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/movie_video_item_margin_8dp"
+            android:layout_marginBottom="@dimen/movie_video_item_margin_8dp"
             android:layout_below="@+id/view_videos"
             android:visibility="invisible"
             android:textSize="@dimen/movie_details_error_text_size"
             android:textStyle="bold"
+            android:textAlignment="center"
             />
 
         <include

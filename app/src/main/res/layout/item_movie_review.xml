@@ -41,7 +41,6 @@
 
     <TextView
         android:id="@+id/item_movie_review_url"
-        android:text="@string/item_review_readmore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/movie_video_item_margin_8dp"
