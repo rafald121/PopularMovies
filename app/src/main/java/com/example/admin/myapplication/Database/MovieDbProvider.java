@@ -67,13 +67,18 @@ public class MovieDbProvider extends ContentProvider {
 
             case CODE_MOVIE_SINGLE:{
 
-                String id = uri.getLastPathSegment();
+                String _selection = MovieEntries.COLUMN_ID + " = ? ";
+
+                String idFromContentProvider = uri.getLastPathSegment();
+                String[] selectionId = new String[]{idFromContentProvider};
+
+                //TODO query columns that are desired in MovieDetails activity
 
                 cursor = movieDbHelper.getReadableDatabase().query(
                         TABLE_NAME,
                         projection,
-                        selection,
-                        selectionArgs,
+                        _selection,
+                        selectionId,
                         null,
                         null,
                         sortOrder);
