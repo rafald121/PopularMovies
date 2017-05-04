@@ -25,6 +25,7 @@ import com.example.admin.myapplication.Adapters.MovieReviewAdapter;
 import com.example.admin.myapplication.Adapters.MovieVideoAdapter;
 import com.example.admin.myapplication.ConstantValues.ConstantValues;
 import com.example.admin.myapplication.Database.MovieDbConstant;
+import com.example.admin.myapplication.Interfaces.MovieReviewSiteClickListener;
 import com.example.admin.myapplication.Interfaces.MovieVideoClickListener;
 import com.example.admin.myapplication.JSONUtilities.MovieDetailsJSONParser;
 import com.example.admin.myapplication.JSONUtilities.MovieReviewsJSONParser;
@@ -45,7 +46,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MovieDetails extends AppCompatActivity implements MovieVideoClickListener{
+public class MovieDetails extends AppCompatActivity implements MovieVideoClickListener, MovieReviewSiteClickListener{
     private static final String TAG = MovieDetails.class.getSimpleName();
 
     @BindView(R.id.movie_title)         TextView textViewTitle;
@@ -314,7 +315,7 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
 
 
     private void populateReviewRecyclerView(List<MovieReview> movieReview) {
-        movieReviewAdapter = new MovieReviewAdapter(movieReview, this);
+        movieReviewAdapter = new MovieReviewAdapter(movieReview, this, this);
 
         LinearLayoutManager recyclerManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyclerViewReviews.setLayoutManager(recyclerManager);
@@ -340,6 +341,13 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
         Uri videoUri = NetworkHelper.getUriMovieVideo(key);
         Intent YTintent = new Intent(Intent.ACTION_VIEW, videoUri);
         startActivity(YTintent);
+    }
+
+    @Override
+    public void onReviewClicked(String url) {
+        Uri reviewUri = NetworkHelper.getUriMovieReviewContent(url);
+        Intent commentContent = new Intent(Intent.ACTION_VIEW, reviewUri);
+        startActivity(commentContent);
     }
 
     public class AsyncTaskMovieDetail extends AsyncTask<String, Void, Movie>{

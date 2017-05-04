@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.admin.myapplication.Interfaces.MovieReviewClickListener;
+import com.example.admin.myapplication.Interfaces.MovieReviewSiteClickListener;
 import com.example.admin.myapplication.Model.MovieReview;
 import com.example.admin.myapplication.R;
 
@@ -28,10 +29,11 @@ public class MovieReviewAdapter extends RecyclerView.Adapter<MovieReviewAdapter.
 
     private List<MovieReview> movieReviewsList;
     private Context context;
-
-    public MovieReviewAdapter(List<MovieReview> movieReviewsList, Context context) {
+    private MovieReviewSiteClickListener listener;
+    public MovieReviewAdapter(List<MovieReview> movieReviewsList, Context context, MovieReviewSiteClickListener listener) {
         this.movieReviewsList = movieReviewsList;
         this.context = context;
+        this.listener = listener;
     }
 
     @Override
@@ -72,6 +74,7 @@ public class MovieReviewAdapter extends RecyclerView.Adapter<MovieReviewAdapter.
             url = (TextView) itemView.findViewById(R.id.item_movie_review_url);
 
             itemView.setOnClickListener(this);
+
         }
 
         public void bind(int position) {
@@ -79,13 +82,17 @@ public class MovieReviewAdapter extends RecyclerView.Adapter<MovieReviewAdapter.
 
             author.setText(movieReviewsList.get(position).getAuthor());
             content.setText(movieReviewsList.get(position).getContent());
-            url.setText(movieReviewsList.get(position).getUrl());
+            url.setText(context.getResources().getString(R.string.review_read_more));
+            url.setTag(movieReviewsList.get(position).getUrl());
+
+//            itemView.setTag();
 
         }
 
         @Override
         public void onClick(View v) {
-            String tag = (String) itemView.getTag();
+            String _url =  url.getTag().toString();
+            listener.onReviewClicked(_url);
         }
     }
 }
