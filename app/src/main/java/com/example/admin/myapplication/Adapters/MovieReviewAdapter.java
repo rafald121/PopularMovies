@@ -82,7 +82,7 @@ public class MovieReviewAdapter extends RecyclerView.Adapter<MovieReviewAdapter.
 
             author.setText(movieReviewsList.get(position).getAuthor());
             content.setText(movieReviewsList.get(position).getContent());
-            url.setText(context.getResources().getString(R.string.review_read_more));
+            url.setText(context.getResources().getString(R.string.item_review_readmore));
             url.setTag(movieReviewsList.get(position).getUrl());
 
 //            itemView.setTag();

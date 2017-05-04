@@ -110,7 +110,9 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
                 if(intentMovieDetails.hasExtra(ConstantValues.MOVIE_ID_FROM_NET) == true){
 
                     movieIdFromNet = intentMovieDetails.getStringExtra(ConstantValues.MOVIE_ID_FROM_NET);
-                    
+
+                    showCommunicatesWhenOfflineMode();
+
                     getDetailsFromContentProvider(movieIdFromNet);
 
                 } else {
@@ -125,6 +127,15 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
             Log.e(TAG, "onCreate: bad error");
         }
 
+    }
+
+    public void showCommunicatesWhenOfflineMode(){
+        layoutVideos.setVisibility(View.INVISIBLE);
+        reviewVideos.setVisibility(View.INVISIBLE);
+        movieDetailsReviewsError.setVisibility(View.VISIBLE);
+        movieDetailsVideosError.setVisibility(View.VISIBLE);
+        movieDetailsReviewsError.setText("You can't see reviews in offline mode");
+        movieDetailsVideosError.setText("You can't see videos in offline mode");
     }
 
     private void setDefaultViewsVisibility() {
