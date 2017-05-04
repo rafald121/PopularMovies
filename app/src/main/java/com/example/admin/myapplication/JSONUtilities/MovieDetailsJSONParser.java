@@ -23,7 +23,7 @@ public class MovieDetailsJSONParser {
     private final static String JSON_POPULARITY = "popularity";
     private final static String JSON_VOTE_AVARAGE = "vote_average";
     private final static String JSON_POSTER_PATH = "poster_path";
-//TODO jeśli tylko lista to potrzebujemy tylko image i id filmu
+
     public static List<Movie> convertJSONIntoMovieList(String jsonString) throws JSONException {
 
         if(jsonString == null)

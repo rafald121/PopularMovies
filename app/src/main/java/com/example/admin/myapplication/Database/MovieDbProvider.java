@@ -72,8 +72,6 @@ public class MovieDbProvider extends ContentProvider {
                 String idFromContentProvider = uri.getLastPathSegment();
                 String[] selectionId = new String[]{idFromContentProvider};
 
-                //TODO query columns that are desired in MovieDetails activity
-
                 cursor = movieDbHelper.getReadableDatabase().query(
                         TABLE_NAME,
                         projection,
