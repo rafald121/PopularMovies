@@ -66,8 +66,19 @@ public class MovieDbProvider extends ContentProvider {
             }
 
             case CODE_MOVIE_SINGLE:{
+
                 String id = uri.getLastPathSegment();
-                Log.i(TAG, "query: error");
+
+                cursor = movieDbHelper.getReadableDatabase().query(
+                        TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+
             }
 
             default:

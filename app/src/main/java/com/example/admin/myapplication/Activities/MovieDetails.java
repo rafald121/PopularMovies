@@ -71,7 +71,7 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
     private Intent intentMovieDetails;
 
     private String movieIdFromNet;
-
+    private int movieIdFromContentProvider;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,14 +83,71 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
         ButterKnife.bind(this);
 
         intentMovieDetails = getIntent();
-        if(intentMovieDetails.hasExtra(ConstantValues.MOVIE_ID_FROM_NET)) {
-            movieIdFromNet = intentMovieDetails.getStringExtra(ConstantValues.MOVIE_ID_FROM_NET);
-        } else {
-            //TODO zrob komunikat jesli nie pobierze ID
+
+        if(intentMovieDetails.hasExtra(ConstantValues.IS_CONNECTION_AVAILABLE)){
+
+            if(intentMovieDetails.getBooleanExtra(ConstantValues.IS_CONNECTION_AVAILABLE, false) == true){
+
+                if(intentMovieDetails.hasExtra(ConstantValues.MOVIE_ID_FROM_NET)) {
+
+                    movieIdFromNet = intentMovieDetails.getStringExtra(ConstantValues.MOVIE_ID_FROM_NET);
+
+                    new AsyncTaskMovieDetail().execute(movieIdFromNet);
+                    new AsyncTaskMovieReviews().execute(movieIdFromNet);
+                    new AsyncTaskMovieVideos().execute(movieIdFromNet);
+
+                } else {
+                    Log.i(TAG, "onCreate: error tukej1");
+                    //TODO zrob komunikat jesli nie pobierze ID
+                }
+
+            } else{
+
+                if(intentMovieDetails.hasExtra(ConstantValues.MOVIE_ID_FROM_CONTENTPROVIDER) == true){
+
+//                    menuItemFavourite.setIcon(R.drawable.ic_favorite_black_24dp);
+
+                    movieIdFromContentProvider = intentMovieDetails.getIntExtra(ConstantValues.MOVIE_ID_FROM_CONTENTPROVIDER, 0);
+
+//                    getSupportLoaderManager().initLoader(ID_MOVIE_LOADER, null, this);
+
+                    getDetailsFromContentProvider(movieIdFromContentProvider);
+
+                } else {
+                    Log.i(TAG, "onCreate: error tukej2");
+
+                    //TODO zrob komunikat jesli nie pobierze ID
+                }
+
+                //get from content provider
+            }
+
+        } else{
+            Log.e(TAG, "onCreate: bad error");
         }
-        new AsyncTaskMovieDetail().execute(movieIdFromNet);
-        new AsyncTaskMovieReviews().execute(movieIdFromNet);
-        new AsyncTaskMovieVideos().execute(movieIdFromNet);
+
+
+    }
+
+    private void getDetailsFromContentProvider(int movieIdFromContentProvider) {
+
+        //TODO hide videos and reviews when offline mode
+        String movieId = String.valueOf(movieIdFromContentProvider);
+        Uri uri = Uri.parse(String.valueOf(MovieDbConstant.MovieEntries.CONTENT_URI + "/" + movieId));
+        Log.i(TAG, "getDetailsFromContentProvider: uri; " + uri.toString());
+        Cursor cursor = getContentResolver().query(uri,
+                null,
+                null,
+                null,
+                null);
+
+        if(cursor.getCount()!=0) {
+            Log.e(TAG, "getDetailsFromContentProvider: != 0 cursor.getCount == " + cursor.getCount() );
+
+            bind(cursor);
+        } else
+            Log.e(TAG, "getDetailsFromContentProvider: cursor.getCount == " + cursor.getCount() );
+
     }
 
     @Override
@@ -118,6 +175,8 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
                     item.setIcon(R.drawable.ic_favorite_border_black_24dp);
                 } else {
 
+//TODO addToDatabase available only on online mode
+
                     if(addToDatabase(movieIdFromNet)) {
                         item.setIcon(R.drawable.ic_favorite_black_24dp);
                         Toast.makeText(MovieDetails.this, "Movie has been added to favourite!", Toast.LENGTH_SHORT).show();
@@ -140,7 +199,7 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
 
         Uri uri = MovieDbConstant.MovieEntries.CONTENT_URI;
         uri = uri.buildUpon().appendPath(sId).build();
-
+        Log.i(TAG, "deleteFromDatabase: uriDelete: " + uri.toString());
         getContentResolver().delete(uri, null, null);
 
 //todo add loader
@@ -160,6 +219,9 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
         contentValues.put(MovieDbConstant.MovieEntries.COLUMN_IMAGE_LINK, movieObj.getMoviePoster());
 
         Uri uri = getContentResolver().insert(MovieDbConstant.MovieEntries.CONTENT_URI, contentValues);
+
+        Log.i(TAG, "deleteFromDatabase: uriAdd: " + uri.toString());
+
 
         if (uri != null) {
             return true;
@@ -191,6 +253,10 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
 
     }
 
+    private void setActionBarTitle(String title) {
+        actionBar.setTitle(title);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return super.onOptionsItemSelected(item);
@@ -216,8 +282,18 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
 
     }
 
-    private void setActionBarTitle(String title) {
-        actionBar.setTitle(title);
+    private void bind(Cursor cursor){
+
+        cursor.moveToFirst();
+
+        textViewTitle.setText(cursor.getString(cursor.getColumnIndex(MovieDbConstant.MovieEntries.COLUMN_TITLE)));
+        textViewReleaseDate.setText(cursor.getString(cursor.getColumnIndex(MovieDbConstant.MovieEntries.COLUMN_RELEASE_DATE)));
+        textViewVoteAvarage.setText(cursor.getString(cursor.getColumnIndex(MovieDbConstant.MovieEntries.COLUMN_VOTE_AVARAGE)));
+        textViewDetails.setText(cursor.getString(cursor.getColumnIndex(MovieDbConstant.MovieEntries.COLUMN_PLOT_SYNOPSIS)));
+
+//        textViewTitle.setText(cursor.getString(cursor.getColumnIndex(MovieDbConstant.MovieEntries.COLUMN_TITLE)));
+//        textViewTitle.setText(cursor.getString(cursor.getColumnIndex(MovieDbConstant.MovieEntries.COLUMN_TITLE)));
+
     }
 
 
@@ -245,6 +321,7 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
         return null;
     }
 

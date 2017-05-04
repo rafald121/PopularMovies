@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.admin.myapplication.Adapters.MovieAdapter;
 import com.example.admin.myapplication.ConstantValues.ConstantValues;
@@ -106,8 +107,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         actionBar = getSupportActionBar();
 
         setupRecyclerView(recyclerView);
-
-        sortByPopular();
+        sortByFavourite();
+//        sortByPopular();
     }
 
     private void sortByTopRated() {
@@ -137,13 +138,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         SELECTED_TYPE = FAVOURITE;
         setActionBarTitle();
-
+//TODO cursor should only return columns that are nessecary
         Cursor cursor = getContentResolver().query(MovieDbConstant.MovieEntries.CONTENT_URI,
                 null,
                 null,
                 null,
                 null);
+
         if(cursor.getCount() != 0){
+
             populateRecycler(cursor);
         }
         else if(cursor.getCount() == 0){
@@ -244,13 +247,35 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onListItemClick(int clickedItemPosition) {
+        Log.i(TAG, "onListItemClick: clickedItemPosition: " + clickedItemPosition);
 
-        String idFromMovieDB = listOfMovies.get(clickedItemPosition).getIdFromDBMovie();
+        Intent intentMovieDetails;
 
-        Intent intentMovieDetails = new Intent(MainActivity.this, MovieDetails.class);
-        intentMovieDetails.putExtra(ConstantValues.MOVIE_ID_FROM_NET, idFromMovieDB);
+        if(NetworkHelper.isNetworkAvailable(getApplicationContext())) {
+            String idFromMovieDB = listOfMovies.get(clickedItemPosition).getIdFromDBMovie();
 
-        startActivity(intentMovieDetails);
+            intentMovieDetails = new Intent(MainActivity.this, MovieDetails.class);
+            intentMovieDetails.putExtra(ConstantValues.IS_CONNECTION_AVAILABLE, true);
+            intentMovieDetails.putExtra(ConstantValues.MOVIE_ID_FROM_NET, idFromMovieDB);
+
+            startActivity(intentMovieDetails);
+        } else{ // no connection
+
+            if(SELECTED_TYPE.equals(FAVOURITE)){
+
+                intentMovieDetails = new Intent(MainActivity.this, MovieDetails.class);
+                intentMovieDetails.putExtra(ConstantValues.IS_CONNECTION_AVAILABLE, false);
+                intentMovieDetails.putExtra(ConstantValues.MOVIE_ID_FROM_CONTENTPROVIDER, clickedItemPosition);
+
+                startActivity(intentMovieDetails);
+
+            } else if(SELECTED_TYPE.equals(TOP_RATED) || SELECTED_TYPE.equals(MOST_POPULAR)){
+                Toast.makeText(this, "You can't see details on not favourite movie", Toast.LENGTH_SHORT).show();
+                return;
+            } else {
+                Log.e(TAG, "onListItemClick: bad error");
+            }
+        }
     }
 
     private void refreshData() {
@@ -299,12 +324,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     }
 
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
+
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -346,7 +366,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
             setActionBarTitle();
 
-            if(isNetworkAvailable()) {
+            if(NetworkHelper.isNetworkAvailable(getApplicationContext())) {
                 progressBar.setVisibility(View.VISIBLE);
                 errorLayout.setVisibility(View.INVISIBLE);
                 recyclerView.setVisibility(View.INVISIBLE);
