@@ -11,17 +11,23 @@
         android:layout_height="wrap_content"
         android:id="@+id/item_movie_review_author"
         android:textSize="20sp"
+        android:layout_marginLeft="@dimen/movie_video_item_margin_8dp"
+        android:layout_marginRight="@dimen/movie_video_item_margin_8dp"
         android:textStyle="bold"/>
 
     <TextView
         tools:text="Good movie!"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/movie_video_item_margin_8dp"
+        android:layout_marginRight="@dimen/movie_video_item_margin_8dp"
         android:id="@+id/item_movie_review_content" />
 
     <TextView
         android:text="http:google.com"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/movie_video_item_margin_8dp"
+        android:layout_marginRight="@dimen/movie_video_item_margin_8dp"
         android:id="@+id/item_movie_review_url" />
 </LinearLayout>
