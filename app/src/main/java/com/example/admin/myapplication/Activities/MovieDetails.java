@@ -23,9 +23,11 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.admin.myapplication.Adapters.MovieReviewAdapter;
+import com.example.admin.myapplication.Adapters.MovieVideoAdapter;
 import com.example.admin.myapplication.ConstantValues.ConstantValues;
 import com.example.admin.myapplication.Database.MovieDbConstant;
 import com.example.admin.myapplication.Interfaces.MovieReviewClickListener;
+import com.example.admin.myapplication.Interfaces.MovieVideoClickListener;
 import com.example.admin.myapplication.JSONUtilities.MovieDetailsJSONParser;
 import com.example.admin.myapplication.JSONUtilities.MovieReviewsJSONParser;
 import com.example.admin.myapplication.JSONUtilities.MovieVideosJSONParser;
@@ -44,7 +46,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MovieDetails extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>
+public class MovieDetails extends AppCompatActivity implements MovieVideoClickListener, LoaderManager.LoaderCallbacks<Cursor>
 {
     private static final String TAG = MovieDetails.class.getSimpleName();
 
@@ -54,10 +56,13 @@ public class MovieDetails extends AppCompatActivity implements LoaderManager.Loa
     @BindView(R.id.movie_details)       TextView textViewDetails;
     @BindView(R.id.movie_poster)        ImageView imageViewPoster;
     @BindView(R.id.recyclerview_review) RecyclerView recyclerViewReviews;
+    @BindView(R.id.recyclerview_videos) RecyclerView recyclerViewVideos;
 
     public static final int ID_MOVIE_LOADER = 41;
 
     private MovieReviewAdapter movieReviewAdapter;
+    private MovieVideoAdapter movieVideoAdapter;
+
     private Movie movieObj;
     private MenuItem menuItemFavourite;
 
@@ -85,7 +90,7 @@ public class MovieDetails extends AppCompatActivity implements LoaderManager.Loa
         }
         new AsyncTaskMovieDetail().execute(movieIdFromNet);
         new AsyncTaskMovieReviews().execute(movieIdFromNet);
-//        new AsyncTaskMovieVideos().execute(movieIdFromNet);
+        new AsyncTaskMovieVideos().execute(movieIdFromNet);
     }
 
     @Override
@@ -227,6 +232,17 @@ public class MovieDetails extends AppCompatActivity implements LoaderManager.Loa
 
     }
 
+    private void populateVideoRecyclerView(List<MovieVideo> movieVideos) {
+        movieVideoAdapter = new MovieVideoAdapter(movieVideos, this, this);
+
+        LinearLayoutManager recyclerManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        recyclerViewVideos.setLayoutManager(recyclerManager);
+        recyclerViewVideos.setHasFixedSize(true);
+
+        recyclerViewVideos.setAdapter(movieVideoAdapter);
+
+    }
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return null;
@@ -237,11 +253,20 @@ public class MovieDetails extends AppCompatActivity implements LoaderManager.Loa
 
     }
 
+
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
     }
 
+    @Override
+    public void onClickMovieVideoListener(String key) {
+        Uri videoUri = NetworkHelper.getUriMovieVideo(key);
+        Log.i(TAG, "onClickMovieVideoListener: URI hehehehehe" + videoUri.toString());
+
+        Intent YTintent = new Intent(Intent.ACTION_VIEW, videoUri);
+        startActivity(YTintent);
+    }
 
     public class AsyncTaskMovieDetail extends AsyncTask<String, Void, Movie>{
 
@@ -250,7 +275,6 @@ public class MovieDetails extends AppCompatActivity implements LoaderManager.Loa
             //TODO DODAC LOADERA jakeis koleczko
             super.onPreExecute();
         }
-
         @Override
         protected Movie doInBackground(String... params) {
 
@@ -278,6 +302,7 @@ public class MovieDetails extends AppCompatActivity implements LoaderManager.Loa
             return movieDetails;
 
         }
+
         @Override
         protected void onPostExecute(Movie movie) {
             if(movie == null){
@@ -300,7 +325,6 @@ public class MovieDetails extends AppCompatActivity implements LoaderManager.Loa
             //TODO DODAC LOADERA jakeis koleczko
             super.onPreExecute();
         }
-
         @Override
         protected List<MovieReview> doInBackground(String... params) {
 
@@ -338,6 +362,7 @@ public class MovieDetails extends AppCompatActivity implements LoaderManager.Loa
 
             super.onPostExecute(movieReview);
         }
+
     }
 
     public class AsyncTaskMovieVideos extends AsyncTask<String, Void, List<MovieVideo>> {
@@ -379,17 +404,19 @@ public class MovieDetails extends AppCompatActivity implements LoaderManager.Loa
 
             return listOfMovieVideo;
         }
-
         @Override
         protected void onPostExecute(List<MovieVideo> movieVideos) {
-            if(movieVideos == null) {
+
+            if(movieVideos != null) {
+                populateVideoRecyclerView(movieVideos);
+                Log.i(TAG, "onPostExecute: git" + movieVideos.toString());
+            } else {
                 //TODO zabezpieczyc
                 Log.i(TAG, "onPostExecute: list is null");
-            } else {
-                Log.i(TAG, "onPostExecute: git" + movieVideos.toString());
             }
             super.onPostExecute(movieVideos);
         }
+
     }
 
     private boolean validateParams(String[] params){
