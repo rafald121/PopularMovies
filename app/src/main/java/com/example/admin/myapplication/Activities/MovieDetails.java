@@ -3,11 +3,9 @@ package com.example.admin.myapplication.Activities;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,7 +25,6 @@ import com.example.admin.myapplication.Adapters.MovieReviewAdapter;
 import com.example.admin.myapplication.Adapters.MovieVideoAdapter;
 import com.example.admin.myapplication.ConstantValues.ConstantValues;
 import com.example.admin.myapplication.Database.MovieDbConstant;
-import com.example.admin.myapplication.Interfaces.MovieReviewClickListener;
 import com.example.admin.myapplication.Interfaces.MovieVideoClickListener;
 import com.example.admin.myapplication.JSONUtilities.MovieDetailsJSONParser;
 import com.example.admin.myapplication.JSONUtilities.MovieReviewsJSONParser;
@@ -36,6 +34,7 @@ import com.example.admin.myapplication.Model.MovieReview;
 import com.example.admin.myapplication.Model.MovieVideo;
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.Utils.NetworkHelper;
+import com.example.admin.myapplication.Utils.Utils;
 
 import org.json.JSONException;
 
@@ -46,8 +45,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MovieDetails extends AppCompatActivity implements MovieVideoClickListener, LoaderManager.LoaderCallbacks<Cursor>
-{
+public class MovieDetails extends AppCompatActivity implements MovieVideoClickListener{
     private static final String TAG = MovieDetails.class.getSimpleName();
 
     @BindView(R.id.movie_title)         TextView textViewTitle;
@@ -57,6 +55,11 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
     @BindView(R.id.movie_poster)        ImageView imageViewPoster;
     @BindView(R.id.recyclerview_review) RecyclerView recyclerViewReviews;
     @BindView(R.id.recyclerview_videos) RecyclerView recyclerViewVideos;
+    @BindView(R.id.view_videos)         View layoutVideos;
+    @BindView(R.id.view_reviews)        View reviewVideos;
+    @BindView(R.id.movie_details_reviews_error) TextView movieDetailsReviewsError;
+    @BindView(R.id.movie_details_videos_error)  TextView movieDetailsVideosError;
+
 
     public static final int ID_MOVIE_LOADER = 41;
 
@@ -71,7 +74,7 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
     private Intent intentMovieDetails;
 
     private String movieIdFromNet;
-    private int movieIdFromContentProvider;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,9 +84,9 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         ButterKnife.bind(this);
+        setDefaultViewsVisibility();
 
         intentMovieDetails = getIntent();
-
         if(intentMovieDetails.hasExtra(ConstantValues.IS_CONNECTION_AVAILABLE)){
 
             if(intentMovieDetails.getBooleanExtra(ConstantValues.IS_CONNECTION_AVAILABLE, false) == true){
@@ -115,14 +118,17 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
                     //TODO zrob komunikat jesli nie pobierze ID
                 }
 
-                //get from content provider
             }
 
         } else{
             Log.e(TAG, "onCreate: bad error");
         }
 
+    }
 
+    private void setDefaultViewsVisibility() {
+        movieDetailsReviewsError.setVisibility(View.INVISIBLE);
+        movieDetailsVideosError.setVisibility(View.INVISIBLE);
     }
 
     private void getDetailsFromContentProvider(String movieIdFromNet) {
@@ -218,9 +224,6 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
         Log.i(TAG, "deleteFromDatabase: uriDelete: " + uri.toString());
         getContentResolver().delete(uri, null, null);
 
-//todo add loader
-//        getSupportLoaderManager().restartLoader(TASK_LOADER_ID, null, MovieDetails.this )
-
         return false;
     }
 
@@ -236,10 +239,7 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
 
         Uri uri = getContentResolver().insert(MovieDbConstant.MovieEntries.CONTENT_URI, contentValues);
 
-        Log.i(TAG, "deleteFromDatabase: uriAdd: " + uri.toString());
-
         String lastSegmentFromUri = uri.getLastPathSegment();
-        Log.i(TAG, "addToDatabase: lastSegmentFromUri: " + lastSegmentFromUri.toString());
 
         if (uri != null) {
             return true;
@@ -301,21 +301,15 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
     }
 
     private void bind(Cursor cursor){
-
         cursor.moveToFirst();
-
 
         String title = cursor.getString(cursor.getColumnIndex(MovieDbConstant.MovieEntries.COLUMN_TITLE));
         setActionBarTitle(title);
-        textViewTitle.setText(title);
 
+        textViewTitle.setText(title);
         textViewReleaseDate.setText(cursor.getString(cursor.getColumnIndex(MovieDbConstant.MovieEntries.COLUMN_RELEASE_DATE)));
         textViewVoteAvarage.setText(cursor.getString(cursor.getColumnIndex(MovieDbConstant.MovieEntries.COLUMN_VOTE_AVARAGE)));
         textViewDetails.setText(cursor.getString(cursor.getColumnIndex(MovieDbConstant.MovieEntries.COLUMN_PLOT_SYNOPSIS)));
-
-//        textViewTitle.setText(cursor.getString(cursor.getColumnIndex(MovieDbConstant.MovieEntries.COLUMN_TITLE)));
-//        textViewTitle.setText(cursor.getString(cursor.getColumnIndex(MovieDbConstant.MovieEntries.COLUMN_TITLE)));
-
     }
 
 
@@ -342,27 +336,8 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-
-        return null;
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
-    }
-
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
-    }
-
-    @Override
     public void onClickMovieVideoListener(String key) {
         Uri videoUri = NetworkHelper.getUriMovieVideo(key);
-        Log.i(TAG, "onClickMovieVideoListener: URI hehehehehe" + videoUri.toString());
-
         Intent YTintent = new Intent(Intent.ACTION_VIEW, videoUri);
         startActivity(YTintent);
     }
@@ -370,17 +345,11 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
     public class AsyncTaskMovieDetail extends AsyncTask<String, Void, Movie>{
 
         @Override
-        protected void onPreExecute() {
-            //TODO DODAC LOADERA jakeis koleczko
-            super.onPreExecute();
-        }
-        @Override
         protected Movie doInBackground(String... params) {
 
-            if(!validateParams(params)){
-                //TODO ZRob cos
+            if(!Utils.validateParams(params)){
+                Log.e(TAG, "doInBackground: ERROR");
                 return null;
-
             }
 
             Movie movieDetails = null;
@@ -405,30 +374,25 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
         @Override
         protected void onPostExecute(Movie movie) {
             if(movie == null){
+                movieObj = movie;
+                bind(movie);
+                setActionBarTitle(movie.getTitle());
+            } else{
+                //TODO show error
                 Log.i(TAG, "onPostExecute: movie is null");
                 return;
             }
-            movieObj = movie;
-            bind(movie);
-            setActionBarTitle(movie.getTitle());
         }
 
     }
 
     public class AsyncTaskMovieReviews extends AsyncTask<String, Void, List<MovieReview>>{
 
-        private final String TAG_AT_MovieReviews = AsyncTaskMovieReviews.class.getSimpleName();
-
-        @Override
-        protected void onPreExecute() {
-            //TODO DODAC LOADERA jakeis koleczko
-            super.onPreExecute();
-        }
         @Override
         protected List<MovieReview> doInBackground(String... params) {
 
-            if(!validateParams(params)){
-                //TODO zrob cos
+            if(!Utils.validateParams(params)){
+                Log.e(TAG, "doInBackground: error");
                 return null;
             }
 
@@ -452,10 +416,14 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
         }
         @Override
         protected void onPostExecute(List<MovieReview> movieReview) {
-            if(movieReview!=null){
+            if(movieReview!=null && movieReview.size() > 0){
                 populateReviewRecyclerView(movieReview);
             }
             else {
+                reviewVideos.setVisibility(View.INVISIBLE);
+                movieDetailsVideosError.setVisibility(View.VISIBLE);
+                //                TODO POPRAWIC PUSTO
+                movieDetailsVideosError.setText("Pusto");
                 Log.i(TAG, "onPostExecute: list is null");
             }
 
@@ -466,19 +434,11 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
 
     public class AsyncTaskMovieVideos extends AsyncTask<String, Void, List<MovieVideo>> {
 
-        private final String TAG_AT_MovieVideos = AsyncTaskMovieVideos.class.getSimpleName();
-
-        @Override
-        protected void onPreExecute() {
-
-            super.onPreExecute();
-        }
-
         @Override
         protected List<MovieVideo> doInBackground(String... params) {
 
-            if(!validateParams(params)) {
-                //TODO zrob cos
+            if(!Utils.validateParams(params)) {
+                Log.e(TAG, "doInBackground: ERROR");
                 return null;
             }
 
@@ -488,12 +448,9 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
 
             Uri uri = NetworkHelper.getUriMovieVideos(id);
             URL url = NetworkHelper.buildURL(uri);
-            Log.i(TAG, "doInBackground: qwe" + url);
+
             try{
                 resultString = NetworkHelper.getJsonDataFromResponse(url);
-
-                Log.i(TAG, "doInBackground: result: " + resultString);
-
                 listOfMovieVideo = MovieVideosJSONParser.convertJSONIntoMovieVideoList(resultString);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -506,56 +463,19 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
         @Override
         protected void onPostExecute(List<MovieVideo> movieVideos) {
 
-            if(movieVideos != null) {
+            if(movieVideos != null && movieVideos.size() > 0 )  {
                 populateVideoRecyclerView(movieVideos);
-                Log.i(TAG, "onPostExecute: git" + movieVideos.toString());
             } else {
-                //TODO zabezpieczyc
-                Log.i(TAG, "onPostExecute: list is null");
+                layoutVideos.setVisibility(View.INVISIBLE);
+                movieDetailsVideosError.setVisibility(View.VISIBLE);
+//                TODO POPRAWIC TO PUSTO
+                movieDetailsVideosError.setText("pusto");
             }
             super.onPostExecute(movieVideos);
         }
 
     }
 
-    private boolean validateParams(String[] params){
-        if(params == null || params[0] == null){
-            return false;
-        }
-
-        if(params.length==0 && params[0].equals("")){
-            return false;
-        }
-
-        if(params[0].length() == 0) {
-            return false;
-        }
-
-        return true;
-    }
-
     //TODO UDACITY czy moze byc cos innego niz Cursor w Loaderze \/
-//    @Override
-//    public Loader<MovieDetails> onCreateLoader(int id, Bundle args) {
-//        switch (id){
-//            case MOVIE_DETAIL_ID:
-//                Uri uri = NetworkHelper.getUriMovieDetail(movieIdFromNet);
-//                URL url = NetworkHelper.buildURL(uri);
-//
-//
-//
-//
-//        }
-//    }
-//
-//    @Override
-//    public void onLoadFinished(Loader<MovieDetails> loader, MovieDetails data) {
-//
-//    }
-//
-//    @Override
-//    public void onLoaderReset(Loader<MovieDetails> loader) {
-//
-//    }
 
 }
