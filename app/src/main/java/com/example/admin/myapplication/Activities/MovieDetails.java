@@ -304,7 +304,11 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
 
         cursor.moveToFirst();
 
-        textViewTitle.setText(cursor.getString(cursor.getColumnIndex(MovieDbConstant.MovieEntries.COLUMN_TITLE)));
+
+        String title = cursor.getString(cursor.getColumnIndex(MovieDbConstant.MovieEntries.COLUMN_TITLE));
+        setActionBarTitle(title);
+        textViewTitle.setText(title);
+
         textViewReleaseDate.setText(cursor.getString(cursor.getColumnIndex(MovieDbConstant.MovieEntries.COLUMN_RELEASE_DATE)));
         textViewVoteAvarage.setText(cursor.getString(cursor.getColumnIndex(MovieDbConstant.MovieEntries.COLUMN_VOTE_AVARAGE)));
         textViewDetails.setText(cursor.getString(cursor.getColumnIndex(MovieDbConstant.MovieEntries.COLUMN_PLOT_SYNOPSIS)));
