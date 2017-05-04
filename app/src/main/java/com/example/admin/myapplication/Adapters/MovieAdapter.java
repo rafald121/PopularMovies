@@ -1,6 +1,7 @@
 package com.example.admin.myapplication.Adapters;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolderMo
 
     private static final String TAG = ViewHolderMovie.class.getSimpleName();
     private List<Movie> movieList;
+    private Cursor cursor;
     private Context context;
 
     final private RecyclerItemClickListener mOnClickListener;
@@ -55,6 +57,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolderMo
         return movieList.size();
     }
 
+    public void swapCursor(Cursor data) {
+        cursor = data;
+        notifyDataSetChanged();
+    }
 
     //todo try to move it \/ to single class
     public class ViewHolderMovie extends RecyclerView.ViewHolder  implements View.OnClickListener{

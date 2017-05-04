@@ -7,6 +7,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -44,7 +47,7 @@ import java.util.List;
 // */
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, RecyclerItemClickListener,  {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener, RecyclerItemClickListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -64,6 +67,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final int INDEX_COLUMN_ID_FROM_NET = 5;
 
     public static final int ID_MOVIE_LOADER = 41;
+
+    private int mPosition = RecyclerView.NO_POSITION;
+
 
     private List<Movie> listOfMovies = null;
 
@@ -125,6 +131,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void sortByFavourite() {
+
         recyclerView.setVisibility(View.VISIBLE);
         errorLayout.setVisibility(View.INVISIBLE);
 
@@ -284,7 +291,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 actionBar.setTitle(title);
                 break;
             case FAVOURITE:
-                title = getResources().getString(R.string.sort_by_favourite);
+                title = getResources().getString(R.string.actionbar_title_favourite);
                 actionBar.setTitle(title);
             default:
                 Log.e(TAG, "setActionBarTitle: ERROR");
@@ -299,7 +306,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-//TODO UDACITY jak oddzielic to od oddzielnej klasy jeśli w tej klasie \/ używamy metod z klasy MainActivity
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        switch (id){
+            case ID_MOVIE_LOADER:
+                Uri movieFavouriteUri = MovieDbConstant.MovieEntries.CONTENT_URI;
+
+                return new CursorLoader(this, movieFavouriteUri, null, null, null,null);
+
+            default:
+                throw new RuntimeException("Loader Not Implemented: " + id);
+
+        }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        movieAdapter.swapCursor(data);
+        if (mPosition == RecyclerView.NO_POSITION)
+            mPosition = 0;
+
+        recyclerView.smoothScrollToPosition(mPosition);
+
+        if (data.getCount() != 0)
+            populateRecycler(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        movieAdapter.swapCursor(null);
+    }
+
+    //TODO UDACITY jak oddzielic to od oddzielnej klasy jeśli w tej klasie \/ używamy metod z klasy MainActivity
     public class MovieQueryTask extends AsyncTask<String, Void, List<Movie>> {
 
         @Override
