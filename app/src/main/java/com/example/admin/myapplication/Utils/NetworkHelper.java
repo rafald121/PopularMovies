@@ -117,6 +117,10 @@ public class NetworkHelper {
     }
 
 
+    public static Uri getUriMovieReviewContent(String url) {
+        return Uri.parse(url);
+    }
+
     public static URL buildURL(Uri uri){
 
         URL url = null;
@@ -136,6 +140,7 @@ public class NetworkHelper {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
+
 
     public static String getJsonDataFromResponse(URL url) throws IOException {
 
@@ -189,6 +194,4 @@ public class NetworkHelper {
         }
 
     }
-
-
 }
