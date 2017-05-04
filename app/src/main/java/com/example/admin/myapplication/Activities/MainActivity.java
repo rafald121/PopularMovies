@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private static final String MOST_POPULAR = "MOST_POPULAR";
     private static final String FAVOURITE = "FAVOURITE";
 
-    private String SELECTED_TYPE = null;
+    private static String SELECTED_TYPE = TOP_RATED;//default
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,8 +107,24 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         actionBar = getSupportActionBar();
 
         setupRecyclerView(recyclerView);
-        sortByFavourite();
-//        sortByPopular();
+        showListOfMovies();
+    }
+
+    private void showListOfMovies() {
+        switch (SELECTED_TYPE){
+            case FAVOURITE:
+                sortByFavourite();
+                break;
+            case TOP_RATED:
+                sortByTopRated();
+                break;
+            case MOST_POPULAR:
+                sortByPopular();
+                break;
+            default:
+                Log.e(TAG, "showListOfMovies: error");
+        }
+
     }
 
     private void sortByTopRated() {
