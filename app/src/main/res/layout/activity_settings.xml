@@ -4,8 +4,6 @@
     android:name="com.example.admin.myapplication.Settings.SettingsFragment"
     android:id="@+id/movie_settings_fragment"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    />
-    <!--class="com.example.admin.myapplication.Settings.SettingsFragment"-->
-    <!--/>-->
+    android:layout_height="match_parent"/>
+
 

@@ -1,33 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TextView
-        tools:text="Maniek"
-        android:layout_width="match_parent"
+        android:text="@string/item_review_author"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/movie_video_item_margin_8dp"
+        android:layout_marginRight="@dimen/movie_video_item_margin_8dp"
+        android:textStyle="bold"
+        android:textSize="@dimen/movie_review_item_headers_text_size"/>
+
+    <TextView
         android:id="@+id/item_movie_review_author"
-        android:textSize="20sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/movie_review_item_text_size"
         android:layout_marginLeft="@dimen/movie_video_item_margin_8dp"
-        android:layout_marginRight="@dimen/movie_video_item_margin_8dp"
-        android:textStyle="bold"/>
+        android:layout_marginRight="@dimen/movie_video_item_margin_8dp"/>
 
     <TextView
-        tools:text="Good movie!"
+        android:text="@string/item_review_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/movie_video_item_margin_8dp"
+        android:layout_marginRight="@dimen/movie_video_item_margin_8dp"
+        android:textStyle="bold"
+        android:textSize="@dimen/movie_review_item_headers_text_size"   />
+
+    <TextView
+        android:id="@+id/item_movie_review_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/movie_video_item_margin_8dp"
         android:layout_marginRight="@dimen/movie_video_item_margin_8dp"
-        android:id="@+id/item_movie_review_content" />
+        android:maxLines="10"
+        android:ellipsize="end"/>
 
     <TextView
-        android:text="http:google.com"
-        android:layout_width="match_parent"
+        android:id="@+id/item_movie_review_url"
+        android:text="@string/item_review_readmore"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/movie_video_item_margin_8dp"
         android:layout_marginRight="@dimen/movie_video_item_margin_8dp"
-        android:id="@+id/item_movie_review_url" />
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/movie_review_item_readmore_text_size"/>
+
 </LinearLayout>

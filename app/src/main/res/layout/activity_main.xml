@@ -13,7 +13,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
         android:padding="4dp">
-        <!--TODO is this appropriate to set padding in Recycler View like line above?-->
     </android.support.v7.widget.RecyclerView>
 
 
@@ -38,7 +37,7 @@
             android:textSize="@dimen/error_textview_size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"/>
+            android:layout_margin="@dimen/error_message_margin"/>
 
         <Button
             android:id="@+id/refresh_button_error"

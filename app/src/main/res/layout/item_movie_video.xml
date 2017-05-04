@@ -13,6 +13,8 @@
         android:layout_weight="2"
         android:layout_marginLeft="@dimen/movie_video_item_margin_8dp"
         android:layout_marginRight="@dimen/movie_video_item_margin_8dp"
+        android:textSize="@dimen/movie_video_item_title_text_size"
+        android:textStyle="bold"
         />
 
     <ImageView

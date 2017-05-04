@@ -73,7 +73,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearrr"
+            android:id="@+id/movie_details_details_linear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/movie_poster"
@@ -110,9 +110,10 @@
             android:id="@+id/movie_details_videos_error"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/linearrr"
+            android:layout_below="@+id/movie_details_details_linear"
             android:visibility="invisible"
-
+            android:textSize="@dimen/movie_details_error_text_size"
+            android:textStyle="bold"
             />
 
         <include
@@ -122,7 +123,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/linearrr"
+            android:layout_below="@+id/movie_details_details_linear"
             android:layout_marginLeft="@dimen/movie_details_margin_16"
             android:layout_marginRight="@dimen/movie_details_margin_16" />
 
@@ -132,6 +133,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/view_videos"
             android:visibility="invisible"
+            android:textSize="@dimen/movie_details_error_text_size"
+            android:textStyle="bold"
             />
 
         <include
@@ -144,7 +147,6 @@
             android:layout_below="@+id/view_videos"
             android:layout_marginLeft="@dimen/movie_details_margin_16"
             android:layout_marginRight="@dimen/movie_details_margin_16" />
-
 
     </RelativeLayout>
 

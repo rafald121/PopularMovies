@@ -10,8 +10,22 @@
     <dimen name="movie_details_margin_16">16dp</dimen>
 
     <dimen name="movie_video_item_margin_8dp">8dp</dimen>
+    <dimen name="movie_videos_reviews_header_margin_8dp">8dp</dimen>
 
     <dimen name="movie_details_divider_margin">8dp</dimen>
+    <dimen name="movie_details_divider_margin_top">16dp</dimen>
+    <dimen name="error_message_margin">8dp</dimen>
+
+<!--TEXT SIZES-->
+    <dimen name="movie_details_error_text_size">16sp</dimen>
+    <dimen name="movie_videos_reviews_header_text_size">24sp</dimen>
+    <dimen name="movie_video_item_title_text_size">14sp</dimen>
+    <dimen name="movie_review_item_headers_text_size">14sp</dimen>
+    <dimen name="movie_review_item_text_size">14sp</dimen>
+
+    <dimen name="movie_review_item_readmore_text_size">16sp</dimen>
+    <!--DIVIDERS-->
+    <dimen name="videos_reviews_divider">2dp</dimen>
 
 
 </resources>

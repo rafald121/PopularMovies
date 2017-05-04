@@ -8,19 +8,19 @@
     <ImageView
         android:id="@+id/divider1"
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginBottom="@dimen/movie_details_divider_margin"
-        android:layout_marginTop="@dimen/movie_details_divider_margin"
+        android:layout_height="@dimen/videos_reviews_divider"
+        android:layout_marginBottom="@dimen/movie_details_divider_margin_top"
+        android:layout_marginTop="@dimen/movie_details_divider_margin_top"
         android:background="@color/colorPrimary" />
 
     <TextView
         android:id="@+id/header_videos"
+        android:text="@string/header_videos_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/movie_video_item_margin_8dp"
-        android:text="Videos:"
+        android:layout_marginLeft="@dimen/movie_videos_reviews_header_margin_8dp"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="24sp" />
+        android:textSize="@dimen/movie_videos_reviews_header_text_size" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview_videos"

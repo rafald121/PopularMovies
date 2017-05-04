@@ -18,7 +18,9 @@
     <string name="header_release_date">Release Date</string>
     <string name="header_vote_avarage">Vote Avarage</string>
     <string name="header_plot_synopsis">Plot synopsis</string>
-<!--ERRORS-->
+    <string name="header_reviews_layout">Reviews: </string>
+    <string name="header_videos_layout">Videos: </string>
+    <!--ERRORS-->
     <string name="error_message_no_connection">No inthernet connection</string>
     <string name="error_message_list_is_null">Cannot fetch data from internet, list is null</string>
     <string name="error_message_bad_url_syntax">Bad syntax of URL</string>
@@ -34,6 +36,11 @@
 
     <string name="settings_horizontal_grid_items_key">horizontal_grid_items</string>
     <string name="settings_vertical_grid_items_key">vertical_grid_items</string>
+
+    <!--REVIEW ITEM-->
+    <string name="item_review_author">Author: </string>
+    <string name="item_review_content">Content: </string>
+    <string name="item_review_readmore">Author: </string>
 
 
 </resources>
