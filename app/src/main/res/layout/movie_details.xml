@@ -106,24 +106,12 @@
 
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/divider1"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_below="@+id/linearrr"
-            android:layout_marginBottom="@dimen/movie_details_divider_margin"
-            android:layout_marginTop="@dimen/movie_details_divider_margin"
-            android:background="@color/colorPrimary" />
-
         <TextView
-            android:id="@+id/header_videos"
-            android:layout_width="wrap_content"
+            android:id="@+id/movie_details_videos_error"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/linearrr"
-            android:layout_marginLeft="@dimen/movie_details_margin_16"
-            android:text="Videos:"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="24sp" />
+         />
 
         <include
             android:id="@+id/view_videos"
@@ -132,30 +120,16 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/divider1"
+            android:layout_below="@+id/linearrr"
             android:layout_marginLeft="@dimen/movie_details_margin_16"
             android:layout_marginRight="@dimen/movie_details_margin_16" />
 
-        <ImageView
-            android:id="@+id/divider2"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_below="@+id/view_videos"
-
-            android:layout_marginBottom="@dimen/movie_details_divider_margin"
-            android:layout_marginTop="@dimen/movie_details_divider_margin"
-            android:background="@color/colorPrimary" />
-
-
         <TextView
-            android:id="@+id/header_reviews"
-            android:layout_width="wrap_content"
+            android:id="@+id/movie_details_reviews_error"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/divider2"
-            android:layout_marginLeft="@dimen/movie_details_margin_16"
-            android:text="Reviews:"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="24sp" />
+            android:layout_below="@+id/view_videos"
+            />
 
         <include
             android:id="@+id/view_reviews"
@@ -164,7 +138,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/header_reviews"
+            android:layout_below="@+id/view_videos"
             android:layout_marginLeft="@dimen/movie_details_margin_16"
             android:layout_marginRight="@dimen/movie_details_margin_16" />
 

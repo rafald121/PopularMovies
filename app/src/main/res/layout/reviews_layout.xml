@@ -1,8 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/divider2"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginBottom="@dimen/movie_details_divider_margin"
+        android:layout_marginTop="@dimen/movie_details_divider_margin"
+        android:background="@color/colorPrimary" />
+
+    <TextView
+        android:id="@+id/header_reviews"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/movie_details_margin_16"
+        android:text="Reviews:"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="24sp" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview_review"
@@ -10,4 +27,4 @@
         android:layout_height="wrap_content">
     </android.support.v7.widget.RecyclerView>
 
-</FrameLayout>
+</LinearLayout>
