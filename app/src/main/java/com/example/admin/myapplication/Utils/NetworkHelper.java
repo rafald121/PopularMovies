@@ -23,7 +23,8 @@ import java.util.List;
  * Created by admin on 01.04.2017.
  */
 //http://api.themoviedb.org/3/movie/321612/reviews?api_key=6e339219779d415f85a8fb48b3a9a07b
-
+////http://img.youtube.com/vi/tWapqpCEO7Y/default.jpg
+//https://www.youtube.com/watch?v=SF58Lsvqg5E
 public class NetworkHelper {
     private static final String TAG = NetworkHelper.class.getSimpleName();
 
@@ -35,6 +36,10 @@ public class NetworkHelper {
     private static final String URL_REVIEWS = "reviews";
     private static final String URL_VIDEOS = "videos";
 
+    private static final String YOUTUBE_VIDEO_BASE = "http://www.youtube.com/watch?v=";
+    private static final String YOUTUBE_IMAGE_BASE = "http://img.youtube.com/vi";
+    private static final String YOUTUBE_IMAGE_DEFAULT = "default.jpg";
+    private static final String YOUTUBE_IMAGE_MEDIUM  = "mqdefault.jpg";
 
     private static final String URL_KEY = "?api_key=6e339219779d415f85a8fb48b3a9a07b";
 
@@ -76,6 +81,10 @@ public class NetworkHelper {
 
     }
 
+    public static Uri getUriMovieVideo(String id){
+       return Uri.parse(YOUTUBE_VIDEO_BASE + id);
+    }
+
     public static Uri getUriMovieVideos(String id){
         String uriString = Uri.parse(URL_BASE).buildUpon()
                 .appendEncodedPath(id)
@@ -88,10 +97,22 @@ public class NetworkHelper {
 
     }
 
+
+//    public static Uri getUriMovieVideosImage(String id){
+//        return Uri.parse("");
+//    }
+
     public static Uri getUriMovieImage(String imageId){
         return Uri.parse(URL_PICTURE_BASE).buildUpon()
                 .appendEncodedPath(imageId).build();
     }
+
+    public static Uri getUriMovieVideoImage(String videoKey) {
+        return Uri.parse(YOUTUBE_IMAGE_BASE).buildUpon()
+                .appendEncodedPath(videoKey)
+                .appendEncodedPath(YOUTUBE_IMAGE_MEDIUM).build();
+    }
+
 
     public static URL buildURL(Uri uri){
 
@@ -105,7 +126,6 @@ public class NetworkHelper {
 
         return url;
     }
-
 
     public static String getJsonDataFromResponse(URL url) throws IOException {
 
