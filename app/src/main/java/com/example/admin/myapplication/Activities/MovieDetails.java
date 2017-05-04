@@ -373,7 +373,7 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
 
         @Override
         protected void onPostExecute(Movie movie) {
-            if(movie == null){
+            if(movie != null){
                 movieObj = movie;
                 bind(movie);
                 setActionBarTitle(movie.getTitle());
@@ -421,9 +421,9 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
             }
             else {
                 reviewVideos.setVisibility(View.INVISIBLE);
-                movieDetailsVideosError.setVisibility(View.VISIBLE);
+                movieDetailsReviewsError.setVisibility(View.VISIBLE);
                 //                TODO POPRAWIC PUSTO
-                movieDetailsVideosError.setText("Pusto");
+                movieDetailsReviewsError.setText("Pusto");
                 Log.i(TAG, "onPostExecute: list is null");
             }
 
