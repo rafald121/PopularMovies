@@ -16,9 +16,12 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Surface;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -89,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private static final String MOST_POPULAR = "MOST_POPULAR";
     private static final String FAVOURITE = "FAVOURITE";
 
-    private static String SELECTED_TYPE = TOP_RATED;//default
+    private static String SELECTED_TYPE = MOST_POPULAR;//default
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         setupRecyclerView(recyclerView);
         showListOfMovies();
+
     }
 
     private void showListOfMovies() {
@@ -197,7 +201,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private void setupRecyclerView(RecyclerView recyclerView) {
-        gridLayoutManager = new GridLayoutManager(MainActivity.this, 5);
+        if(isPhoneRotated())
+            gridLayoutManager = new GridLayoutManager(MainActivity.this, 5);
+        else
+            gridLayoutManager = new GridLayoutManager(MainActivity.this, 3);
+
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(gridLayoutManager);
@@ -253,13 +261,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         return super.onOptionsItemSelected(item);
     }
 
-
-
     @Override
     public void onClick(View v) {
         if(v.getId() == refreshButton.getId())
             refreshData();
     }
+
+
 
     @Override
     public void onListItemClick(int clickedItemPosition) {
@@ -320,7 +328,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     }
 
-
     private void setActionBarTitle() {
         String title ;
 
@@ -343,7 +350,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
 
-
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch (id){
@@ -357,6 +363,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         }
     }
+
+
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
@@ -475,6 +483,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             super.onProgressUpdate(values);
         }
 
+    }
+
+    private boolean isPhoneRotated() {
+        Display display = ((WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        int rotation = display.getRotation();
+        if(rotation == Surface.ROTATION_0 || rotation == Surface.ROTATION_180)
+            return false;
+        else
+            return true;
     }
 
 }
