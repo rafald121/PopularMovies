@@ -20,11 +20,17 @@
     <string name="header_plot_synopsis">Plot synopsis</string>
     <string name="header_reviews_layout">Reviews: </string>
     <string name="header_videos_layout">Videos: </string>
+
     <!--ERRORS-->
     <string name="error_message_no_connection">No inthernet connection</string>
     <string name="error_message_list_is_null">Cannot fetch data from internet, list is null</string>
     <string name="error_message_bad_url_syntax">Bad syntax of URL</string>
-
+<!--COMMUNICATES-->
+    <string name="no_reviews">This movie hasn\'t got any reviews</string>
+    <string name="no_videos">This movie hasn\'t got any videos</string>
+    <string name="add_to_favourites">Movie has ben added to favourite!</string>
+    <string name="delete_from_favourites">"Movie has been remove from favourite!"</string>
+    <string name="failed_to_add_to_favourites">Failed to add to favourite</string>
     <!--SETTINGS-->
     <string name="main_activity_menu_settings">Settings</string>
 
@@ -40,7 +46,7 @@
     <!--REVIEW ITEM-->
     <string name="item_review_author">Author: </string>
     <string name="item_review_content">Content: </string>
-    <string name="item_review_readmore">Author: </string>
+    <string name="item_review_readmore">Read more!</string>
 
 
 </resources>

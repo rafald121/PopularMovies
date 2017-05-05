@@ -9,8 +9,6 @@
         android:inputType="numberDecimal"
         android:key="@string/settings_horizontal_grid_items_key"
         android:title="@string/settings_horizontal_grid_items_title"/>
-        <!--TODO SINGLE LINECO TO -->
-        <!--android:singleLine="true"-->
 
     <EditTextPreference
         android:defaultValue="@string/settings_vertical_grid_items_default"
