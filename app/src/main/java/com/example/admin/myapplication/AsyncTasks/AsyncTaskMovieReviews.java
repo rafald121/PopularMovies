@@ -33,9 +33,9 @@ public class AsyncTaskMovieReviews extends AsyncTask<String, Void, List<MovieRev
     private AsyncTastMovieReviewListener listener;
     private WeakReference<Context> contextRef;
 
-    public AsyncTaskMovieReviews(Context context) {
+    public AsyncTaskMovieReviews(Context context, AsyncTastMovieReviewListener listener) {
         contextRef = new WeakReference<>(context);
-        listener = (AsyncTastMovieReviewListener) contextRef;
+        this.listener = listener;
     }
 
     @Override

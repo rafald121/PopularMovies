@@ -28,9 +28,9 @@ public class AsyncTaskMovieVideos extends AsyncTask<String, Void, List<MovieVide
     private AsyncTaskMovieVideosListener listener;
     private WeakReference<Context> contextRef;
 
-    public AsyncTaskMovieVideos(Context context) {
+    public AsyncTaskMovieVideos(Context context, AsyncTaskMovieVideosListener listener) {
         contextRef = new WeakReference<>(context);
-        listener = (AsyncTaskMovieVideosListener) contextRef;
+        this.listener = listener;
     }
 
 
