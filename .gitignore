@@ -38,3 +38,5 @@ app/app\.iml
 \.idea/misc\.xml
 
 \.idea/vcs\.xml
+
+app/\.DS_Store

@@ -110,9 +110,9 @@ public class MovieDetails extends AppCompatActivity
 
                     movieIdFromNet = intentMovieDetails.getStringExtra(ConstantValues.MOVIE_ID_FROM_NET);
 
-                    new AsyncTaskMovieDetail(getApplicationContext()).execute(movieIdFromNet);
-                    new AsyncTaskMovieReviews(getApplicationContext()).execute(movieIdFromNet);
-                    new AsyncTaskMovieVideos(getApplicationContext()).execute(movieIdFromNet);
+                    new AsyncTaskMovieDetail(this, this).execute(movieIdFromNet);
+                    new AsyncTaskMovieReviews(this, this).execute(movieIdFromNet);
+                    new AsyncTaskMovieVideos(this, this).execute(movieIdFromNet);
 
                 } else {
 //                    TODO UDACITY have you got any idea what can I write in "else" case when It is hardly possible to happen like line below?
