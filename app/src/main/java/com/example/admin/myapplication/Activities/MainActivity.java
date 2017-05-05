@@ -94,17 +94,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private static final String FAVOURITE = "FAVOURITE";
     private static String SELECTED_TYPE = MOST_POPULAR;//default
 
-    int lastRecyclerPosition = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if(savedInstanceState != null) {
-            if (savedInstanceState.containsKey(ConstantValues.LIFECYCLE_OUT_RECYCLER_POSITION)) {
-                lastRecyclerPosition = savedInstanceState.getInt(ConstantValues.LIFECYCLE_OUT_RECYCLER_POSITION);
-            }
-        }
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         progressBar = (ProgressBar) findViewById(R.id.progressbar_bar);
@@ -472,23 +466,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
                 movieAdapter = new MovieAdapter(getApplicationContext(), s, MainActivity.this);
                 recyclerView.setAdapter(movieAdapter);
-                recyclerView.smoothScrollToPosition(lastRecyclerPosition);
             }
         }
 
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            super.onProgressUpdate(values);
-        }
-
 
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        int outPosition = recyclerView.getVerticalScrollbarPosition();
-        outState.putInt(ConstantValues.LIFECYCLE_OUT_RECYCLER_POSITION, outPosition);
-
-    }
 }
