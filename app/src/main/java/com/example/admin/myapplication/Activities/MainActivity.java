@@ -37,6 +37,7 @@ import com.example.admin.myapplication.Model.Movie;
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.Settings.SettingsActivity;
 import com.example.admin.myapplication.Utils.NetworkHelper;
+import com.example.admin.myapplication.Utils.Utils;
 
 import org.json.JSONException;
 
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             MovieDbConstant.MovieEntries.COLUMN_ID_FROM_NET
     };
     public static final int INDEX_COLUMN_TITLE = 0;
-    public static final int INDEX_COLUMN_RELEASE_DATE = 1;
+    public static final int  INDEX_COLUMN_RELEASE_DATE = 1;
     public static final int INDEX_COLUMN_VOTE_AVARAGE = 2;
     public static final int INDEX_COLUMN_PLOT_SYNOPSIS = 3;
     public static final int INDEX_COLUMN_IMAGE_LINK = 4;
@@ -91,13 +92,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private static final String TOP_RATED = "TOP_RATED";
     private static final String MOST_POPULAR = "MOST_POPULAR";
     private static final String FAVOURITE = "FAVOURITE";
-
     private static String SELECTED_TYPE = MOST_POPULAR;//default
 
+    int lastRecyclerPosition = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if(savedInstanceState != null) {
+            if (savedInstanceState.containsKey(ConstantValues.LIFECYCLE_OUT_RECYCLER_POSITION)) {
+                lastRecyclerPosition = savedInstanceState.getInt(ConstantValues.LIFECYCLE_OUT_RECYCLER_POSITION);
+            }
+        }
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         progressBar = (ProgressBar) findViewById(R.id.progressbar_bar);
@@ -199,10 +206,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private void setupRecyclerView(RecyclerView recyclerView) {
-        if(isPhoneRotated())
-            gridLayoutManager = new GridLayoutManager(MainActivity.this, 5);
-        else
+        if(Utils.isPhoneRotated(getApplicationContext()))
             gridLayoutManager = new GridLayoutManager(MainActivity.this, 3);
+        else
+            gridLayoutManager = new GridLayoutManager(MainActivity.this, 2);
 
 
         recyclerView.setHasFixedSize(true);
@@ -362,8 +369,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
     }
 
-
-
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         movieAdapter.swapCursor(data);
@@ -467,6 +472,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
                 movieAdapter = new MovieAdapter(getApplicationContext(), s, MainActivity.this);
                 recyclerView.setAdapter(movieAdapter);
+                recyclerView.smoothScrollToPosition(lastRecyclerPosition);
             }
         }
 
@@ -475,15 +481,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             super.onProgressUpdate(values);
         }
 
+
     }
 
-    private boolean isPhoneRotated() {
-        Display display = ((WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-        int rotation = display.getRotation();
-        if(rotation == Surface.ROTATION_0 || rotation == Surface.ROTATION_180)
-            return false;
-        else
-            return true;
-    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        int outPosition = recyclerView.getVerticalScrollbarPosition();
+        outState.putInt(ConstantValues.LIFECYCLE_OUT_RECYCLER_POSITION, outPosition);
 
+    }
 }
