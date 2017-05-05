@@ -24,9 +24,14 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.admin.myapplication.Adapters.MovieReviewAdapter;
 import com.example.admin.myapplication.Adapters.MovieVideoAdapter;
+import com.example.admin.myapplication.AsyncTasks.AsyncTaskMovieDetail;
+import com.example.admin.myapplication.AsyncTasks.AsyncTaskMovieReviews;
 import com.example.admin.myapplication.AsyncTasks.AsyncTaskMovieVideos;
 import com.example.admin.myapplication.ConstantValues.ConstantValues;
 import com.example.admin.myapplication.Database.MovieDbConstant;
+import com.example.admin.myapplication.Interfaces.AsyncTaskMovieDetailListener;
+import com.example.admin.myapplication.Interfaces.AsyncTaskMovieVideosListener;
+import com.example.admin.myapplication.Interfaces.AsyncTastMovieReviewListener;
 import com.example.admin.myapplication.Interfaces.MovieReviewSiteClickListener;
 import com.example.admin.myapplication.Interfaces.MovieVideoClickListener;
 import com.example.admin.myapplication.JSONUtilities.MovieDetailsJSONParser;
@@ -49,7 +54,13 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MovieDetails extends AppCompatActivity implements MovieVideoClickListener, MovieReviewSiteClickListener{
+public class MovieDetails extends AppCompatActivity
+        implements
+        MovieVideoClickListener,
+        MovieReviewSiteClickListener,
+        AsyncTaskMovieVideosListener,
+        AsyncTastMovieReviewListener,
+        AsyncTaskMovieDetailListener{
     private static final String TAG = MovieDetails.class.getSimpleName();
 
     @BindView(R.id.movie_title)         TextView textViewTitle;
@@ -99,9 +110,9 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
 
                     movieIdFromNet = intentMovieDetails.getStringExtra(ConstantValues.MOVIE_ID_FROM_NET);
 
-                    new AsyncTaskMovieDetail().execute(movieIdFromNet);
-                    new AsyncTaskMovieReviews().execute(movieIdFromNet);
-                    new AsyncTaskMovieVideos().execute(movieIdFromNet);
+                    new AsyncTaskMovieDetail(getApplicationContext()).execute(movieIdFromNet);
+                    new AsyncTaskMovieReviews(getApplicationContext()).execute(movieIdFromNet);
+                    new AsyncTaskMovieVideos(getApplicationContext()).execute(movieIdFromNet);
 
                 } else {
 //                    TODO UDACITY have you got any idea what can I write in "else" case when It is hardly possible to happen like line below?
@@ -358,139 +369,41 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
         startActivity(commentContent);
     }
 
-    public class AsyncTaskMovieDetail extends AsyncTask<String, Void, Movie>{
-
-        @Override
-        protected Movie doInBackground(String... params) {
-
-            if(!Utils.validateParams(params)){
-                Log.e(TAG, "doInBackground: ERROR");
-                return null;
-            }
-
-            Movie movieDetails = null;
-            String resultString;
-            String id = params[0];
-
-            Uri uri = NetworkHelper.getUriMovieDetail(id);
-            URL url = NetworkHelper.buildURL(uri);
-            try{
-                resultString = NetworkHelper.getJsonDataFromResponse(url);
-                movieDetails = MovieDetailsJSONParser.convertJSONIntoSingleMovie(resultString);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return movieDetails;
-
-        }
-
-        @Override
-        protected void onPostExecute(Movie movie) {
-            if(movie != null){
-                movieObj = movie;
-                bind(movie);
-                setActionBarTitle(movie.getTitle());
-            } else{
-                Log.i(TAG, "onPostExecute: movie is null");
-                return;
-            }
-        }
-
+    @Override
+    public void videoOnPostExecuteSuccess(List<MovieVideo> movieVideosList) {
+        populateVideoRecyclerView(movieVideosList);
     }
 
-    public class AsyncTaskMovieReviews extends AsyncTask<String, Void, List<MovieReview>>{
-
-        @Override
-        protected List<MovieReview> doInBackground(String... params) {
-
-            if(!Utils.validateParams(params)){
-                Log.e(TAG, "doInBackground: error");
-                return null;
-            }
-
-            List<MovieReview> listOfMovieReviews = null;
-            String resultString;
-            String id = params[0];
-
-            Uri uri = NetworkHelper.getUriMovieReviews(id);
-            URL url = NetworkHelper.buildURL(uri);
-
-            try{
-                resultString = NetworkHelper.getJsonDataFromResponse(url);
-                listOfMovieReviews = MovieReviewsJSONParser.convertJSONIntoList(resultString);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            return listOfMovieReviews;
-        }
-        @Override
-        protected void onPostExecute(List<MovieReview> movieReview) {
-            if(movieReview!=null && movieReview.size() > 0){
-                populateReviewRecyclerView(movieReview);
-            }
-            else {
-                reviewVideos.setVisibility(View.INVISIBLE);
-                movieDetailsReviewsError.setVisibility(View.VISIBLE);
-                movieDetailsReviewsError.setText(getResources().getString(R.string.no_reviews));
-                Log.i(TAG, "onPostExecute: list is null");
-            }
-
-            super.onPostExecute(movieReview);
-        }
-
+    @Override
+    public void videoOnPostExecuteFailure(List<MovieVideo> movieVideosList) {
+        layoutVideos.setVisibility(View.INVISIBLE);
+        movieDetailsVideosError.setVisibility(View.VISIBLE);
+        movieDetailsVideosError.setText(getResources().getString(R.string.no_videos));
     }
 
-    public class AsyncTaskMovieVideos extends AsyncTask<String, Void, List<MovieVideo>> {
-
-        private final String TAG = com.example.admin.myapplication.AsyncTasks.AsyncTaskMovieVideos.class.getSimpleName();
-
-        @Override
-        protected List<MovieVideo> doInBackground(String... params) {
-
-            if(!Utils.validateParams(params)) {
-                Log.e(TAG, "doInBackground: ERROR");
-                return null;
-            }
-
-            List<MovieVideo> listOfMovieVideo = null;
-            String resultString;
-            String id = params[0];
-
-            Uri uri = NetworkHelper.getUriMovieVideos(id);
-            URL url = NetworkHelper.buildURL(uri);
-
-            try{
-                resultString = NetworkHelper.getJsonDataFromResponse(url);
-                listOfMovieVideo = MovieVideosJSONParser.convertJSONIntoMovieVideoList(resultString);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return listOfMovieVideo;
-        }
-        @Override
-        protected void onPostExecute(List<MovieVideo> movieVideos) {
-
-            if(movieVideos != null && movieVideos.size() > 0 )  {
-                populateVideoRecyclerView(movieVideos);
-            } else {
-                layoutVideos.setVisibility(View.INVISIBLE);
-                movieDetailsVideosError.setVisibility(View.VISIBLE);
-                movieDetailsVideosError.setText(getResources().getString(R.string.no_videos));
-            }
-            super.onPostExecute(movieVideos);
-        }
-
+    @Override
+    public void reviewOnPostExecuteSuccess(List<MovieReview> movieReviewList) {
+        populateReviewRecyclerView(movieReviewList);
     }
 
-    //TODO UDACITY if Cursor is only for databases ?
+    @Override
+    public void reviewOnPostExecuteFailure(List<MovieReview> movieReviewList) {
+        reviewVideos.setVisibility(View.INVISIBLE);
+        movieDetailsReviewsError.setVisibility(View.VISIBLE);
+        movieDetailsReviewsError.setText(getResources().getString(R.string.no_reviews));
+    }
+
+    @Override
+    public void detailsOnPostExecuteSuccess(Movie movie) {
+        movieObj = movie;
+        bind(movie);
+        setActionBarTitle(movie.getTitle());
+    }
+
+    @Override
+    public void detailsOnPostExecuteFailure(Movie movie) {
+        return;
+    }
+
 
 }
