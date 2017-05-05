@@ -24,7 +24,8 @@ import static com.bumptech.glide.gifdecoder.GifHeaderParser.TAG;
 /**
  * Created by admin on 24.04.2017.
  */
-
+//TODO UDACITY have you got idea how to set recyclerview slide only for whole next item, not stopping in half of item while sliding like it was VERTICAL mode.
+// Should I use ViewPager or I have to set appropriate RecyclerView settings or even something else?
 public class MovieReviewAdapter extends RecyclerView.Adapter<MovieReviewAdapter.ViewHolderMovieReview>{
 
     private List<MovieReview> movieReviewsList;
@@ -57,8 +58,6 @@ public class MovieReviewAdapter extends RecyclerView.Adapter<MovieReviewAdapter.
     }
 
     public class ViewHolderMovieReview extends RecyclerView.ViewHolder implements View.OnClickListener{
-
-        //TODO udacity review how to bind by butterknife?
 
         TextView author;
         TextView content;

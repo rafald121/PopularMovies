@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         SELECTED_TYPE = FAVOURITE;
         setActionBarTitle();
-//TODO cursor should only return columns that are nessecary
+
         Cursor cursor = getContentResolver().query(MovieDbConstant.MovieEntries.CONTENT_URI,
                 null,
                 null,
@@ -166,14 +166,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 null);
 
         if(cursor.getCount() != 0){
-
             populateRecycler(cursor);
         }
         else if(cursor.getCount() == 0){
             Log.i(TAG, "sortByFavourite: error");
         }
 
-        //TODO show movies from content provider with LoaderManager;
     }
 
     private void populateRecycler(Cursor cursor) {
@@ -383,7 +381,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         movieAdapter.swapCursor(null);
     }
 
-    //TODO UDACITY jak oddzielic to od oddzielnej klasy jeśli w tej klasie \/ używamy metod z klasy MainActivity
+    //TODO UDACITY how to separate AsyncTask class from here \/ to separate class (not inner) when this class (AsyncTask) use methods from MainActivity(for example, when OnPostExecute call - put data from list to recyclerview
     public class MovieQueryTask extends AsyncTask<String, Void, List<Movie>> {
 
         @Override
@@ -397,12 +395,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 errorLayout.setVisibility(View.INVISIBLE);
                 recyclerView.setVisibility(View.INVISIBLE);
             } else {
-                //TODO LOAD FROM DATABASE WHEN NETWORK IS NOT AVAILABLE
-                //TODO is this appropriate to use Strings from reources in code, not in xml like line below?
-                /*Yes, it is appropriate to use. In fact, it is a recommended practice, particularly if you want to localize the strings (i.e support different languages).
-                Some helpful references on this:
-                https://medium.com/google-developer-experts/android-strings-xml-things-to-remember-c155025bb8bb
-                https://developer.android.com/guide/topics/resources/localization.html*/
                 showErrorLayout(getResources().getString(R.string.error_message_no_connection));
                 cancel(true);//abort
             }

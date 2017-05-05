@@ -62,7 +62,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolderMo
         notifyDataSetChanged();
     }
 
-    //TODO UDACITY QUESTION: how to export class below to single class (not inner)
     public class ViewHolderMovie extends RecyclerView.ViewHolder  implements View.OnClickListener{
 
         private ImageView thumbnail;

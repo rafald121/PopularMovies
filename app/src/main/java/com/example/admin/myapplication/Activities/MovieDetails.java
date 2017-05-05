@@ -101,8 +101,8 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
                     new AsyncTaskMovieVideos().execute(movieIdFromNet);
 
                 } else {
-                    Log.i(TAG, "onCreate: error tukej1");
-                    //TODO zrob komunikat jesli nie pobierze ID
+//                    TODO UDACITY have you got any idea what can I write in "else" case when It is hardly possible to happen like line below?
+                    Log.e(TAG, "onCreate: error");
                 }
 
             } else{
@@ -116,11 +116,8 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
                     getDetailsFromContentProvider(movieIdFromNet);
 
                 } else {
-                    Log.i(TAG, "onCreate: error tukej2");
-
-                    //TODO zrob komunikat jesli nie pobierze ID
+                    Log.e(TAG, "onCreate: error");
                 }
-
             }
 
         } else{
@@ -142,7 +139,10 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
         movieDetailsReviewsError.setVisibility(View.INVISIBLE);
         movieDetailsVideosError.setVisibility(View.INVISIBLE);
     }
-
+//TODO UDACITY please tell me if it is appropriate way of get movie details from content provider.
+// First I Pass "movieIdFromNeT" (unique id from moviedb.org) and when It find "id" that match for rows with "idFromNet" in ContentProvider it return me "id"
+//    to use it in Uri.
+//    would It be better when every recyclerview item had got its own "id" (1,2,3,4,5.. etc) instead of way that I did?
     private void getDetailsFromContentProvider(String movieIdFromNet) {
 
         long idFromContentProvider = -1;
@@ -160,9 +160,8 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
 
             idFromContentProvider = cursor.getLong(cursor.getColumnIndex(MovieDbConstant.MovieEntries.COLUMN_ID));
         }     else {
-            Log.e(TAG, "getDetailsFromContentProvider: ERROR");
+            Log.e(TAG, "getDetailsFromContentProvider: error");
         }
-        //TODO hide videos and reviews when offline mode
 
         Uri uriToDetails = Uri.parse(String.valueOf(MovieDbConstant.MovieEntries.CONTENT_URI + "/" + idFromContentProvider));
 
@@ -204,19 +203,17 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
 
                 if( id != 0 ){
                     deleteFromDatabase(id);
-                    Toast.makeText(MovieDetails.this, "Movie has been remove from favourite!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MovieDetails.this, getResources().getString(R.string.delete_from_favourites), Toast.LENGTH_SHORT).show();
                     item.setIcon(R.drawable.ic_favorite_border_black_24dp);
                 } else {
 
-//TODO addToDatabase available only on online mode
-
                     if(addToDatabase(movieIdFromNet)) {
-                        //TODO udacity: how to set new movie id (from content provider) to item with this movie?
+                        //TODO UDACITY: how to set new movie id (from content provider) to item with this movie ?
                         item.setIcon(R.drawable.ic_favorite_black_24dp);
-                        Toast.makeText(MovieDetails.this, "Movie has been added to favourite!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MovieDetails.this, getResources().getString(R.string.add_to_favourites), Toast.LENGTH_SHORT).show();
                     }
                     else{
-                        Toast.makeText(MovieDetails.this, "Failed to add to favourite", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MovieDetails.this, getResources().getString(R.string.failed_to_add_to_favourites), Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -233,7 +230,6 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
 
         Uri uri = MovieDbConstant.MovieEntries.CONTENT_URI;
         uri = uri.buildUpon().appendPath(sId).build();
-        Log.i(TAG, "deleteFromDatabase: uriDelete: " + uri.toString());
         getContentResolver().delete(uri, null, null);
 
         return false;
@@ -250,8 +246,6 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
         contentValues.put(MovieDbConstant.MovieEntries.COLUMN_IMAGE_LINK, movieObj.getMoviePoster());
 
         Uri uri = getContentResolver().insert(MovieDbConstant.MovieEntries.CONTENT_URI, contentValues);
-
-        String lastSegmentFromUri = uri.getLastPathSegment();
 
         if (uri != null) {
             return true;
@@ -397,7 +391,6 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
                 bind(movie);
                 setActionBarTitle(movie.getTitle());
             } else{
-                //TODO show error
                 Log.i(TAG, "onPostExecute: movie is null");
                 return;
             }
@@ -441,8 +434,7 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
             else {
                 reviewVideos.setVisibility(View.INVISIBLE);
                 movieDetailsReviewsError.setVisibility(View.VISIBLE);
-                //                TODO POPRAWIC PUSTO
-                movieDetailsReviewsError.setText("Pusto");
+                movieDetailsReviewsError.setText(getResources().getString(R.string.no_reviews));
                 Log.i(TAG, "onPostExecute: list is null");
             }
 
@@ -487,14 +479,13 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
             } else {
                 layoutVideos.setVisibility(View.INVISIBLE);
                 movieDetailsVideosError.setVisibility(View.VISIBLE);
-//                TODO POPRAWIC TO PUSTO
-                movieDetailsVideosError.setText("pusto");
+                movieDetailsVideosError.setText(getResources().getString(R.string.no_videos));
             }
             super.onPostExecute(movieVideos);
         }
 
     }
 
-    //TODO UDACITY czy moze byc cos innego niz Cursor w Loaderze \/
+    //TODO UDACITY if Cursor is only for databases ?
 
 }
