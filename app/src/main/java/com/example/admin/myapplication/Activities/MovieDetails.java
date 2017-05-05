@@ -1,6 +1,7 @@
 package com.example.admin.myapplication.Activities;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -23,6 +24,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.admin.myapplication.Adapters.MovieReviewAdapter;
 import com.example.admin.myapplication.Adapters.MovieVideoAdapter;
+import com.example.admin.myapplication.AsyncTasks.AsyncTaskMovieVideos;
 import com.example.admin.myapplication.ConstantValues.ConstantValues;
 import com.example.admin.myapplication.Database.MovieDbConstant;
 import com.example.admin.myapplication.Interfaces.MovieReviewSiteClickListener;
@@ -40,6 +42,7 @@ import com.example.admin.myapplication.Utils.Utils;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.util.List;
 
@@ -444,6 +447,8 @@ public class MovieDetails extends AppCompatActivity implements MovieVideoClickLi
     }
 
     public class AsyncTaskMovieVideos extends AsyncTask<String, Void, List<MovieVideo>> {
+
+        private final String TAG = com.example.admin.myapplication.AsyncTasks.AsyncTaskMovieVideos.class.getSimpleName();
 
         @Override
         protected List<MovieVideo> doInBackground(String... params) {
