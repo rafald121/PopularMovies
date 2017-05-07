@@ -52,7 +52,7 @@ import java.util.List;
 // */
 
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener, RecyclerItemClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, RecyclerItemClickListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -348,37 +348,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     }
 
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        switch (id){
-            case ID_MOVIE_LOADER:
-                Uri movieFavouriteUri = MovieDbConstant.MovieEntries.CONTENT_URI;
-
-                return new CursorLoader(this, movieFavouriteUri, null, null, null,null);
-
-            default:
-                throw new RuntimeException("Loader Not Implemented: " + id);
-
-        }
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        movieAdapter.swapCursor(data);
-        if (mPosition == RecyclerView.NO_POSITION)
-            mPosition = 0;
-
-        recyclerView.smoothScrollToPosition(mPosition);
-
-        if (data.getCount() != 0)
-            populateRecycler(data);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        movieAdapter.swapCursor(null);
-    }
 
     //TODO UDACITY how to separate AsyncTask class from here \/ to separate class (not inner) when this class (AsyncTask) use methods from MainActivity(for example, when OnPostExecute call - put data from list to recyclerview
     public class MovieQueryTask extends AsyncTask<String, Void, List<Movie>> {
