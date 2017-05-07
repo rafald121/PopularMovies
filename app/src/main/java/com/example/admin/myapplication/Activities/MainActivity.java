@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ActionBar actionBar = null;
 
     private Parcelable recyclerViewPositionState;
+    private Parcelable listOfMovieParcelabled;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +122,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setAdapter(movieAdapter);
 
         Log.w(TAG, "onCreate: przed show list");
-        showListOfMovies();
+        if(savedInstanceState==null)
+            showListOfMovies();
+        else
+            Log.i(TAG, "onCreate: TO NIE JEST PIERWSZE URUCHOMIENIE PROGRAMu - NIE POBIERAM LISTY");
+
         Log.w(TAG, "onCreate: po show list " );
     }
 
@@ -455,8 +460,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Log.i(TAG, "onSaveInstanceState: są równe");
         else
             Log.i(TAG, "onSaveInstanceState: nie są ");
-        
+
+
         recyclerViewPositionState = recyclerView.getLayoutManager().onSaveInstanceState();
+        state.putParcelableArrayList(ConstantValues.LIST_PARCELABLE, (ArrayList<? extends Parcelable>) listOfMovies);
         state.putParcelable(ConstantValues.RECYCLERVIEW_POSITION_STATE, recyclerViewPositionState);
         
     }
@@ -464,8 +471,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onRestoreInstanceState(Bundle state) {
         super.onRestoreInstanceState(state);
         Log.w(TAG, "onRestoreInstanceState: ");
-        if(state != null)
+        if(state != null) {
             recyclerViewPositionState = state.getParcelable(ConstantValues.RECYCLERVIEW_POSITION_STATE);
+            listOfMovies = state.getParcelableArrayList(ConstantValues.LIST_PARCELABLE);
+        }
         else
             Log.e(TAG, "onRestoreInstanceState: CAN STATE BE NULL ??? ");
     }
@@ -476,6 +485,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.w(TAG, "onResume: " );
         if (recyclerViewPositionState != null) {
             recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewPositionState);
+            movieAdapter.swapData(listOfMovies);
         }else {
             Log.e(TAG, "onResume: WHY RECYCLER POSITION STATE IS NULL. 1.when app start very first time " );
         }

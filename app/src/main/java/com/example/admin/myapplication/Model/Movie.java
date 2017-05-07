@@ -1,10 +1,13 @@
 package com.example.admin.myapplication.Model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by admin on 01.04.2017.
  */
 
-public class Movie  {
+public class Movie implements Parcelable {
 
     private String idFromDBMovie;
     private String title;
@@ -57,4 +60,41 @@ public class Movie  {
                 ", details='" + details + '\'' +
                 '}';
     }
+
+    protected Movie(Parcel in) {
+        idFromDBMovie = in.readString();
+        title = in.readString();
+        releaseDate = in.readString();
+        moviePoster = in.readString();
+        voteAvarage = in.readString();
+        details = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(idFromDBMovie);
+        dest.writeString(title);
+        dest.writeString(releaseDate);
+        dest.writeString(moviePoster);
+        dest.writeString(voteAvarage);
+        dest.writeString(details);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 }
