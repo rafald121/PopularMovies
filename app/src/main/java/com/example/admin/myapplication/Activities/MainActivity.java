@@ -122,13 +122,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         movieAdapter = new MovieAdapter(this, listOfMovies, MainActivity.this);
         recyclerView.setAdapter(movieAdapter);
 
-        Log.w(TAG, "onCreate: przed show list");
         if(savedInstanceState==null)
             showListOfMovies();
         else
-            Log.i(TAG, "onCreate: TO NIE JEST PIERWSZE URUCHOMIENIE PROGRAMu - NIE POBIERAM LISTY");
+            Log.i(TAG, "onCreate: it isn't first application run so I doesn't download list of movies every time");
 
-        Log.w(TAG, "onCreate: po show list " );
     }
 
 
@@ -459,10 +457,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Save list state
         if(recyclerView.getLayoutManager().equals(gridLayoutManager)){
             previousRecyclerViewPosition = gridLayoutManager.findLastCompletelyVisibleItemPosition();
-            Log.i(TAG, "onSaveInstanceState: są równe. Last visible element: " + previousRecyclerViewPosition);
+            Log.i(TAG, "onSaveInstanceState: equal . Last visible element: " + previousRecyclerViewPosition);
         }
         else {
-            Log.i(TAG, "onSaveInstanceState: nie są ");
+            Log.i(TAG, "onSaveInstanceState: not equal");
         }
 
 
@@ -491,9 +489,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.w(TAG, "onResume: " );
 
         if(recyclerView.getLayoutManager().equals(gridLayoutManager)){
-            Log.i(TAG, "onResume: są równe. Last visible element: " + previousRecyclerViewPosition);
+            Log.i(TAG, "onResume: equal. Last visible element: " + previousRecyclerViewPosition);
         } else {
-            Log.i(TAG, "onResume: nie są ");
+            Log.i(TAG, "onResume: not equal ");
         }
 
 
