@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Parcelable recyclerViewPositionState;
     private Parcelable listOfMovieParcelabled;
+    private int previousRecyclerViewPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -456,16 +457,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onSaveInstanceState(state);
         Log.w(TAG, "onSaveInstanceState: ");
         // Save list state
-        if(recyclerView.getLayoutManager().equals(gridLayoutManager))
-            Log.i(TAG, "onSaveInstanceState: są równe");
-        else
+        if(recyclerView.getLayoutManager().equals(gridLayoutManager)){
+            previousRecyclerViewPosition = gridLayoutManager.findLastCompletelyVisibleItemPosition();
+            Log.i(TAG, "onSaveInstanceState: są równe. Last visible element: " + previousRecyclerViewPosition);
+        }
+        else {
             Log.i(TAG, "onSaveInstanceState: nie są ");
+        }
 
 
         recyclerViewPositionState = recyclerView.getLayoutManager().onSaveInstanceState();
         state.putParcelableArrayList(ConstantValues.LIST_PARCELABLE, (ArrayList<? extends Parcelable>) listOfMovies);
         state.putParcelable(ConstantValues.RECYCLERVIEW_POSITION_STATE, recyclerViewPositionState);
-        
+        state.putInt(ConstantValues.RECYCLERVIEW_POSITION_INT, previousRecyclerViewPosition);
+
     }
 
     protected void onRestoreInstanceState(Bundle state) {
@@ -474,6 +479,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(state != null) {
             recyclerViewPositionState = state.getParcelable(ConstantValues.RECYCLERVIEW_POSITION_STATE);
             listOfMovies = state.getParcelableArrayList(ConstantValues.LIST_PARCELABLE);
+            previousRecyclerViewPosition = state.getInt(ConstantValues.RECYCLERVIEW_POSITION_INT);
         }
         else
             Log.e(TAG, "onRestoreInstanceState: CAN STATE BE NULL ??? ");
@@ -483,11 +489,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         Log.w(TAG, "onResume: " );
+
+        if(recyclerView.getLayoutManager().equals(gridLayoutManager)){
+            Log.i(TAG, "onResume: są równe. Last visible element: " + previousRecyclerViewPosition);
+        } else {
+            Log.i(TAG, "onResume: nie są ");
+        }
+
+
         if (recyclerViewPositionState != null) {
-            recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewPositionState);
             movieAdapter.swapData(listOfMovies);
+
+            recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewPositionState);
+            recyclerView.getLayoutManager().scrollToPosition(previousRecyclerViewPosition);
+            gridLayoutManager.scrollToPosition(previousRecyclerViewPosition);
+
+            //TODO it doesn't work even with recycler view delay like below
+//            recyclerView.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewPositionState);
+//                    recyclerView.getLayoutManager().scrollToPosition(previousRecyclerViewPosition);
+//                }
+//            }, 1500);
         }else {
-            Log.e(TAG, "onResume: WHY RECYCLER POSITION STATE IS NULL. 1.when app start very first time " );
+            Log.e(TAG, "onResume: recycler position state is null when app start very first time " );
         }
     }
 

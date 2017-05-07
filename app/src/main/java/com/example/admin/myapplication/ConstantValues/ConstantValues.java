@@ -11,4 +11,6 @@ public class ConstantValues {
 
     public static final String RECYCLERVIEW_POSITION_STATE = "recycler_position";
     public static final String LIST_PARCELABLE = "list_parcelable";
+    public static final String RECYCLERVIEW_POSITION_INT = "recycler_position_int";
+
 }
