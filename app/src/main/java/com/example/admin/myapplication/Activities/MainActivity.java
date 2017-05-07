@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Parcelable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -71,34 +72,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final int INDEX_COLUMN_IMAGE_LINK = 4;
     public static final int INDEX_COLUMN_ID_FROM_NET = 5;
 
-    public static final int ID_MOVIE_LOADER = 41;
-
-    private int mPosition = RecyclerView.NO_POSITION;
-
-
-    private List<Movie> listOfMovies = null;
-
-    private RecyclerView recyclerView = null;
-    private MovieAdapter movieAdapter = null;
-    private GridLayoutManager gridLayoutManager;
-    private ProgressBar progressBar = null;
-
-    private LinearLayout errorLayout = null;
-    private TextView errorMessage = null;
-    private Button refreshButton = null;
-
-    private ActionBar actionBar = null;
-
     private static final String TOP_RATED = "TOP_RATED";
     private static final String MOST_POPULAR = "MOST_POPULAR";
     private static final String FAVOURITE = "FAVOURITE";
     private static String SELECTED_TYPE = MOST_POPULAR;//default
 
+    private List<Movie> listOfMovies = new ArrayList<>();
+    private RecyclerView recyclerView = null;
+    private MovieAdapter movieAdapter = null;
+    private GridLayoutManager gridLayoutManager;
+
+    private ProgressBar progressBar = null;
+    private LinearLayout errorLayout = null;
+    private TextView errorMessage = null;
+
+    private Button refreshButton = null;
+
+    private ActionBar actionBar = null;
+
+    private Parcelable recyclerViewPositionState;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Log.w(TAG, "onCreate: poczatek" );
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         progressBar = (ProgressBar) findViewById(R.id.progressbar_bar);
@@ -110,10 +108,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         actionBar = getSupportActionBar();
 
-        setupRecyclerView(recyclerView);
-        showListOfMovies();
+        if(Utils.isPhoneRotated(this))
+            gridLayoutManager = new GridLayoutManager(MainActivity.this, 3);
+        else
+            gridLayoutManager = new GridLayoutManager(MainActivity.this, 2);
 
+
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(gridLayoutManager);
+
+        movieAdapter = new MovieAdapter(this, listOfMovies, MainActivity.this);
+        recyclerView.setAdapter(movieAdapter);
+
+        Log.w(TAG, "onCreate: przed show list");
+        showListOfMovies();
+        Log.w(TAG, "onCreate: po show list " );
     }
+
 
     private void showListOfMovies() {
         switch (SELECTED_TYPE){
@@ -141,7 +152,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         new MovieQueryTask().execute(TOP_RATED);
 
     }
-
     private void sortByPopular() {
 
         recyclerView.setVisibility(View.INVISIBLE);
@@ -151,7 +161,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         new MovieQueryTask().execute(MOST_POPULAR);
 
     }
-
     private void sortByFavourite() {
 
         recyclerView.setVisibility(View.VISIBLE);
@@ -199,16 +208,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setAdapter(movieAdapter);
     }
 
-    private void setupRecyclerView(RecyclerView recyclerView) {
-        if(Utils.isPhoneRotated(getApplicationContext()))
-            gridLayoutManager = new GridLayoutManager(MainActivity.this, 3);
-        else
-            gridLayoutManager = new GridLayoutManager(MainActivity.this, 2);
 
-
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(gridLayoutManager);
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -216,7 +216,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -259,15 +258,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         return super.onOptionsItemSelected(item);
     }
-
     @Override
     public void onClick(View v) {
         if(v.getId() == refreshButton.getId())
             refreshData();
     }
-
-
-
     @Override
     public void onListItemClick(int clickedItemPosition) {
         Log.i(TAG, "onListItemClick: clickedItemPosition: " + clickedItemPosition);
@@ -302,7 +297,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
-
     private void refreshData() {
 
         switch (SELECTED_TYPE) {
@@ -316,7 +310,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.e(TAG, "ERROR");
         }
     }
-
     private void showErrorLayout(String message) {
 
         recyclerView.setVisibility(View.INVISIBLE);
@@ -326,7 +319,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         errorMessage.setText(message);
 
     }
-
     private void setActionBarTitle() {
         String title ;
 
@@ -371,7 +363,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         protected List<Movie> doInBackground(String... params) {
-
+            Log.w(TAG, "doInBackground: " );
             if (params.length != 0 && !params[0].equals("") && params[0].length() != 0) {
 
                 String urlType = params[0];
@@ -423,24 +415,71 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         @Override
-        protected void onPostExecute(List<Movie> s) {
+        protected void onPostExecute(List<Movie> movieList) {
+            Log.w(TAG, "onPostExecute: ");
 
             progressBar.setVisibility(View.INVISIBLE);
 
-            if (s == null) {
+            if (movieList == null) {
                 showErrorLayout(getResources().getString(R.string.error_message_list_is_null));
             } else {
+
+//                if(recyclerViewPositionState!=null)
+                    if(recyclerView.getLayoutManager().equals(gridLayoutManager))
+                        if(recyclerView.getLayoutManager() != null) {
+                            movieAdapter.swapData(movieList);
+                            recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewPositionState);
+                            recyclerView.getLayoutManager().scrollToPosition(movieList.size()-1);
+                        }
+                        else
+                            Log.i(TAG, "onPostExecute: recyclerView.getLayoutManager() == null");
+                    else
+                        Log.i(TAG, "onPostExecute: recycler.manager != gridlayoutmanager");
+//                else
+//                    Log.i(TAG, "onPostExecute: recyclerViewPositionState  == null");
+
                 setActionBarTitle();
                 recyclerView.setVisibility(View.VISIBLE);
 
-                movieAdapter = new MovieAdapter(getApplicationContext(), s, MainActivity.this);
-                recyclerView.setAdapter(movieAdapter);
             }
         }
 
 
     }
 
+    protected void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+        Log.w(TAG, "onSaveInstanceState: ");
+        // Save list state
+        if(recyclerView.getLayoutManager().equals(gridLayoutManager))
+            Log.i(TAG, "onSaveInstanceState: są równe");
+        else
+            Log.i(TAG, "onSaveInstanceState: nie są ");
+        
+        recyclerViewPositionState = recyclerView.getLayoutManager().onSaveInstanceState();
+        state.putParcelable(ConstantValues.RECYCLERVIEW_POSITION_STATE, recyclerViewPositionState);
+        
+    }
+
+    protected void onRestoreInstanceState(Bundle state) {
+        super.onRestoreInstanceState(state);
+        Log.w(TAG, "onRestoreInstanceState: ");
+        if(state != null)
+            recyclerViewPositionState = state.getParcelable(ConstantValues.RECYCLERVIEW_POSITION_STATE);
+        else
+            Log.e(TAG, "onRestoreInstanceState: CAN STATE BE NULL ??? ");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.w(TAG, "onResume: " );
+        if (recyclerViewPositionState != null) {
+            recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewPositionState);
+        }else {
+            Log.e(TAG, "onResume: WHY RECYCLER POSITION STATE IS NULL. 1.when app start very first time " );
+        }
+    }
 
 
 }

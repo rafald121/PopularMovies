@@ -57,8 +57,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolderMo
         return movieList.size();
     }
 
-    public void swapCursor(Cursor data) {
-        cursor = data;
+    public void swapData(List<Movie> data) {
+        movieList.clear();
+        movieList.addAll(data);
         notifyDataSetChanged();
     }
 
