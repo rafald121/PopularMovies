@@ -494,12 +494,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Log.i(TAG, "onResume: not equal ");
         }
 
-
         if (recyclerViewPositionState != null) {
             movieAdapter.swapData(listOfMovies);
 
             recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewPositionState);
             recyclerView.getLayoutManager().scrollToPosition(previousRecyclerViewPosition);
+
+            gridLayoutManager.onRestoreInstanceState(recyclerViewPositionState);
             gridLayoutManager.scrollToPosition(previousRecyclerViewPosition);
 
             //TODO it doesn't work even with recycler view delay like below
